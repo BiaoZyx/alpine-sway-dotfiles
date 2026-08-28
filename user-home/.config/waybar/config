@@ -1,0 +1,89 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 20,
+    "spacing": 8,
+
+    "modules-left": ["sway/workspaces", "sway/mode", "custom/privacy-dots"],
+    "modules-center": ["sway/window"],
+    "modules-right": ["network", "pulseaudio", "cpu", "memory", "clock", "custom/clipman", /*"custom/notif",*/ "tray", "custom/power"],
+
+    "sway/workspaces": {
+        //"disable-scroll": true,
+        //"all-outputs": true,
+        "format": "{name}",
+        "on-scroll-up": "swaymsg workspace prev",
+        "on-scroll-down": "swaymsg workspace next"
+    },
+
+    "sway/window": {
+        "max-length": 40
+    },
+
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%a %d %b}",
+        "tooltip-format": "{:%Y-%m-%d %H:%M}"
+    },
+
+    "network": {
+        "format-wifi": " {signalStrength}%",
+        "format-ethernet": " 󰈀 ",
+        "format-disconnected": "  ",
+        "tooltip-format": "{essid} ({signalStrength}%)"
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": " 󰝟 ",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    },
+
+    "custom/privacy-dots": {
+        "exec": "~/.config/waybar/scripts/privacy_dots.sh",
+        "return-type": "json",
+        "interval": 3,
+        "format": "{}"
+    },
+
+    "custom/power": {
+        "format": " ⏻ ",
+        "on-click": "~/.config/waybar/scripts/power.sh",
+        "tooltip": false
+    },
+
+    "custom/clipman": {
+        "format": " 󰅇 ",
+        "on-click": "sh -c 'cliphist list | rofi -dmenu -display-columns 2 -p \"Clipboard\" -font \"JetBrainsMono Nerd Font Mono 12\" | cliphist decode | wl-copy'",
+        "tooltip": false
+    },
+
+    "custom/notif": {
+        "format": "󰂚 {}",
+        "on-click": "fnottctl history",
+        "on-click-right": "fnottctl dismiss all",
+        "tooltip": false,
+        "exec": "fnottctl list | wc -l | tr -d ' '",
+        "interval": 5,
+        "signal": 8
+    },
+
+    "cpu": {
+        "format": "{usage}% ",
+        "interval": 2
+    },
+
+    "memory": {
+        "format": "{percentage}% ",
+        "interval": 2
+    }
+}
+

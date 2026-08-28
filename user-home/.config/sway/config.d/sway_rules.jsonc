@@ -1,0 +1,28 @@
+# ------------------------------
+# Border Settings
+# ------------------------------
+# 必须保证 default_border 不为 none，否则圆角显示不出
+default_border pixel 2
+default_floating_border pixel 2
+
+client.focused          #141218 #8a72b8 #f4efff #8a72b8
+client.unfocused        #141218 #2a2633 #9d99a5 #2a2633
+client.focused_inactive #141218 #2a2633 #9d99a5 #2a2633
+client.urgent           #141218 #ff728f #141218 #ff728f
+
+# ------------------------------
+# Gap Settings
+# ------------------------------
+gaps inner 3
+gaps outer 3
+
+# ------------------------------
+# Wallpaper Setting
+# ------------------------------
+#output * bg /home/xue/Pictures/Wallpapers/dolomite-mountains-3840x2160-11530.jpg fill
+output * bg /home/xue/Pictures/Wallpapers/Gargantua.png fill
+
+# ------------------------------
+# Cursor Setting
+# ------------------------------
+seat * xcursor_theme Cursor_GoogleDot-Black 22

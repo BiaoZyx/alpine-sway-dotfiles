@@ -1,0 +1,14 @@
+2026/08/11-10:36:51.151 2a17 Reusing MANIFEST /home/xue/.local/share/qutebrowser/webengine/IndexedDB/https_cn.bing.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/08/11-10:36:51.151 2a17 Recovering log #14
+2026/08/11-10:36:51.151 2a17 Reusing old log /home/xue/.local/share/qutebrowser/webengine/IndexedDB/https_cn.bing.com_0.indexeddb.leveldb/000014.log 
+2026/08/11-10:36:51.152 2a17 Delete type=2 #12
+2026/08/11-10:36:53.176 2a1b Level-0 table #19: started
+2026/08/11-10:36:53.220 2a1b Level-0 table #19: 514 bytes OK
+2026/08/11-10:36:53.258 2a1b Delete type=0 #14
+2026/08/11-10:36:53.258 2a1b Manual compaction at level-0 from '\x00\x05\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x06\x00\x00\x00' @ 0 : 0; will stop at '\x00\x05\x00\x00\x05' @ 83 : 1
+2026/08/11-10:36:53.258 2a1b Compacting 1@0 + 1@1 files
+2026/08/11-10:36:53.299 2a1b Generated table #20@0: 7 keys, 431 bytes
+2026/08/11-10:36:53.299 2a1b Compacted 1@0 + 1@1 files => 431 bytes
+2026/08/11-10:36:53.335 2a1b compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/08/11-10:36:53.336 2a1b Delete type=2 #19
+2026/08/11-10:36:53.336 2a1b Manual compaction at level-0 from '\x00\x05\x00\x00\x05' @ 83 : 1 .. '\x00\x06\x00\x00\x00' @ 0 : 0; will stop at (end)

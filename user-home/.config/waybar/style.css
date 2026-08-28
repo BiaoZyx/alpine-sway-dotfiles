@@ -1,0 +1,275 @@
+/* ========================================
+   Material / Dark 配色）
+   ======================================== */
+@define-color text #f4efff;
+@define-color subtext1 #e6e0e9;
+@define-color subtext0 #c8c3cf;
+@define-color overlay2 #b3adc0;
+@define-color overlay1 #9d99a5;
+@define-color overlay0 #7f798a;
+@define-color surface2 #4f378b;
+@define-color surface1 #3d2d6e;
+@define-color surface0 #2a2633;
+@define-color base #141218;
+@define-color mantle #0e0c12;
+@define-color crust #08070a;
+
+/* --- 柔和紫 --- */
+@define-color mauve #bca5f2;      /* 主要紫色 - 柔和 */
+@define-color blue #bca5f2;       /* 统一用同一紫色 */
+@define-color lavender #ded0ff;   /* 淡紫保留一点亮 */
+@define-color sapphire #94a5d0;   /* 蓝灰紫，不那么刺眼 */
+
+/* --- 其他颜色 --- */
+@define-color rosewater #f5e0dc;
+@define-color flamingo #f2cdcd;
+@define-color pink #f5c2e7;
+@define-color red #ff728f;
+@define-color maroon #eba0ac;
+@define-color peach #ffda72;
+@define-color yellow #ffe7a5;
+@define-color green #7fff9a;
+@define-color teal #94e2d5;
+@define-color sky #89dceb;
+
+/* ========================================
+   整体栏样式
+   ======================================== */
+#waybar {
+    background: rgba(30, 30, 46, 0.85);
+    color: @text;
+    font-family: "JetBrainsMono Nerd Font Propo", "Noto Sans CJK SC", "Noto Color Emoji";
+    font-size: 10px;
+    font-weight: 500;
+
+    border-radius: 0 0 8px 8px;
+    margin: 0 12px 0 12px;
+    padding: 0px 8px;
+    border-bottom: 0.5px solid rgba(137, 180, 250, 0.3);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ========================================
+   模块
+   ======================================== */
+#workspaces,
+#mode,
+#window,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#clock,
+#tray,
+#custom-clipman,
+#custom-notif,
+#custom-power {
+    padding: 0px 6px;
+    margin: 3px 0px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+#workspaces:hover,
+#mode:hover,
+#window:hover,
+#cpu:hover,
+#memory:hover,
+#network:hover,
+#pulseaudio:hover,
+#clock:hover,
+#custom-clipman:hover,
+#custom-notif:hover/*,
+#custom-power:hover*/ {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* ========================================
+   工作区
+   ======================================== */
+#workspaces {
+    padding: 0px 2px;
+    margin: 3px 1px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+}
+
+#workspaces button {
+    padding: 0px 4px;
+    margin: 1px 1px;
+    color: @subtext0;
+    background: transparent;
+    border-radius: 7px;
+    border: none;
+    transition: all 0.15s ease;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+#workspaces button:hover {
+    color: @text;
+    background: rgba(137, 180, 250, 0.15);
+}
+
+#workspaces button.focused {
+    color: @base;
+    background: @blue;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(137, 180, 250, 0.25);
+}
+
+#workspaces button.urgent {
+    background: @red;
+    color: @base;
+}
+
+#workspaces button:not(.focused):not(.urgent) {
+    color: @overlay0;
+}
+
+/* ========================================
+   窗口标题
+   ======================================== */
+#window {
+    color: @sapphire;
+    font-weight: 600;
+    background: rgba(116, 199, 236, 0.08);
+    border-radius: 8px;
+    padding: 0px 14px;
+    font-size: 12px;
+    margin: 3px 1px;                        /* ← 和其他模块保持一致 */
+}
+
+/* 当没有窗口时，中间模块完全隐形 */
+window#waybar.empty #window {
+    all: unset;  /* 重置所有样式，但可能影响其他属性，谨慎使用 */
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0;
+    min-height: 0;
+}
+
+/* ========================================
+   系统监控
+   ======================================== */
+#cpu {
+    color: @green;
+}
+
+#memory {
+    color: @yellow;
+}
+
+#cpu.warning {
+    color: @peach;
+}
+
+#cpu.critical {
+    color: @red;
+}
+
+/* ========================================
+   网络
+   ======================================== */
+#network {
+    color: @sky;
+}
+
+#network.disconnected {
+    color: @red;
+}
+
+/* ========================================
+   音量
+   ======================================== */
+#pulseaudio {
+    color: @mauve;
+}
+
+#pulseaudio.muted {
+    color: @overlay0;
+}
+
+/* ========================================
+   时钟
+   ======================================== */
+#clock {
+    color: @lavender;
+    font-weight: 600;
+}
+
+/* ========================================
+   自定义模块
+   ======================================== */
+#custom-clipman {
+    color: @peach;
+    font-size: 11px;
+}
+
+#custom-notif {
+    color: @flamingo;
+    font-size: 11px;
+}
+
+#custom-notif.has-notif {
+    color: @red;
+}
+
+#custom-power {
+    color: @red;
+    padding: 0px 4px;
+    margin: 3px 2px;
+    font-weight: 700;
+    font-size: 11px;
+}
+
+#custom-power:hover {
+    color: @peach;
+    background: rgba(243, 139, 168, 0.15);
+}
+
+/* ========================================
+   托盘
+   ======================================== */
+#tray {
+    padding: 0px 2px;
+    background: transparent;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background: rgba(243, 139, 168, 0.2);
+    border-radius: 3px;
+}
+
+/* ========================================
+   模式指示
+   ======================================== */
+#mode {
+    background: @peach;
+    color: @base;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 0px 8px;
+}
+
+#custom-privacy-dots {
+    padding: 0 4px;
+    font-size: 12px;
+}
+
+/* ========================================
+   小调整
+   ======================================== */
+#custom-clipman,
+#custom-notif {
+    font-size: 11px;
+    padding: 0px 4px;
+}

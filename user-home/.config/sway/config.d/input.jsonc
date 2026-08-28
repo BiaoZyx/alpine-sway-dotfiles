@@ -1,0 +1,11 @@
+# 默认启用 NumLock
+input type:keyboard xkb_numlock enabled
+
+# 触摸板
+input type:touchpad {
+    events disabled                     # 默认禁用
+    natural_scroll enabled              # 自然滚动
+    #disabled_on_external_mouse enabled  # 连接鼠标自动禁用 (Alpine Sway 暂不支持)
+}
+
+

@@ -1,0 +1,9 @@
+include /etc/sway/config.d/*
+include ~/.config/sway/config.d/*
+
+# 启动项，其中修复 DBus 问题
+exec ~/.config/sway/scripts/startup.sh
+
+# D-Bus variables
+exec dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
+

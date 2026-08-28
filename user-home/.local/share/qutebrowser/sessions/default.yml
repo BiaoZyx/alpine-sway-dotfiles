@@ -1,0 +1,27 @@
+windows:
+- active: true
+  geometry: !!binary |
+    AdnQywADAAAAAAAAAAAAAAAABUUAAALPAAAAAAAAAAAAAAVFAAACzwAAAAAAAAAABVYAAAAAAAAA
+    AAAABUUAAALP
+  tabs:
+  - history:
+    - active: true
+      last_visited: '2026-08-27T14:36:10'
+      pinned: false
+      scroll-pos:
+        x: 0
+        y: 5363
+      title: 哔哩哔哩 (゜-゜)つロ 干杯~-bilibili
+      url: https://www.bilibili.com/
+      zoom: 1.0
+  - active: true
+    history:
+    - active: true
+      last_visited: '2026-08-27T16:34:42'
+      pinned: false
+      scroll-pos:
+        x: 0
+        y: 0
+      title: 不让他卖酱香饼？他就竞选洛杉矶市长！_哔哩哔哩_bilibili
+      url: https://www.bilibili.com/video/BV1A9uE6HESm/?spm_id_from=333.1007.tianma.20-3-61.click&vd_source=ce21cc12b711a0b49c3294f60c19a1f6
+      zoom: 1.0

@@ -1,0 +1,50 @@
+# 背景颜色 (对应你原来的 -c/--color)
+color=2e3440
+
+# 时钟
+indicator
+clock
+timestr=%H:%M
+datestr=%a, %d %b %Y
+
+#timestr-font-size=48
+#datestr-font-size=28
+
+
+# 失败尝试次数
+show-failed-attempts
+show-keyboard-layout
+
+# 字体大小
+font-size=32
+font=JetBrainsMono Nerd Font Mono
+
+# 整体指示器样式 (圆环、内部)
+indicator-radius=150
+indicator-thickness=15
+
+# --- 颜色配置 (全部使用新版命令行参数格式) ---
+
+# 环 (Ring) 颜色
+ring-color=5294e2
+ring-ver-color=5294e2
+ring-wrong-color=bf616a
+ring-clear-color=2e3440
+
+# 内部 (Inside) 颜色
+inside-color=2e3440
+inside-ver-color=2e3440
+inside-wrong-color=bf616a
+inside-clear-color=2e3440
+
+# 线条颜色 (分隔环和内部)
+line-color=5294e2
+line-ver-color=5294e2
+line-wrong-color=bf616a
+line-clear-color=2e3440
+
+# 文字颜色
+text-color=d8dee9
+text-ver-color=d8dee9
+text-wrong-color=bf616a
+text-clear-color=d8dee9

@@ -1,0 +1,13 @@
+/* 强制所有网页元素使用中文字体，但排除代码相关标签 */
+*:not(pre):not(code):not(kbd):not(samp):not(tt):not(var) {
+    font-family: "Noto Sans CJK SC", sans-serif !important;
+}
+/* 让所有代码元素使用等宽字体 */
+:is(pre, code, kbd, samp, tt, var, .code, .mono, .hljs, .highlight) {
+    font-family: "MesloLGS Nerd Font Mono", monospace !important;
+}
+
+/* 代码块内所有子元素也强制等宽 */
+:is(pre, code, kbd, samp, tt, var, .code, .mono, .hljs, .highlight) * {
+    font-family: "MesloLGS Nerd Font Mono", monospace !important;
+}

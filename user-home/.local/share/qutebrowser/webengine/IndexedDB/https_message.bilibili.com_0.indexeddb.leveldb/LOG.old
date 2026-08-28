@@ -1,0 +1,7 @@
+2026/08/27-20:18:33.039 7fb8 Reusing MANIFEST /home/xue/.local/share/qutebrowser/webengine/IndexedDB/https_message.bilibili.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/08/27-20:18:33.039 7fb8 Recovering log #3
+2026/08/27-20:18:33.078 7fb8 Reusing old log /home/xue/.local/share/qutebrowser/webengine/IndexedDB/https_message.bilibili.com_0.indexeddb.leveldb/000003.log 
+2026/08/27-20:18:37.315 7fbc Level-0 table #5: started
+2026/08/27-20:18:37.370 7fbc Level-0 table #5: 57315 bytes OK
+2026/08/27-20:18:37.418 7fbc Delete type=0 #3
+2026/08/27-20:18:37.419 7fbc Manual compaction at level-0 from (begin) .. (end); will stop at (end)
