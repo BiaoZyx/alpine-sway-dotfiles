@@ -13,7 +13,8 @@ set $right l
 # Custom Keybindings' Settings
 # ------------------------------
 set $term foot
-set $menu ~/.config/sway/scripts/rofi-drun.sh
+#set $menu ~/.config/sway/scripts/rofi-drun.sh
+set $menu ~/.config/sway/scripts/fuzzel-drun.sh
 
 # ------------------------------
 # Default App Keybindings
@@ -30,8 +31,9 @@ bindsym Shift+Print exec grimshot savecopy screen ~/Pictures/Screenshots/$(date 
 bindsym Control+Print exec grimshot savecopy active ~/Pictures/Screenshots/$(date +%d-%m-%Y-%H-%M-%S).png --notify
 bindsym Control+Shift+Print exec grimshot savecopy area ~/Pictures/Screenshots/$(date +%d-%m-%Y-%H-%M-%S).png --notify
 
-# 剪贴板菜单 (使用 rofi)
-bindsym $mod+c exec cliphist list | rofi -dmenu -display-columns 2 -p "Clipboard" -font 'JetBrainsMono Nerd Font Mono 12' | cliphist decode | wl-copy
+# 剪贴板菜单
+#bindsym $mod+c exec cliphist list | rofi -dmenu -display-columns 2 -p "Clipboard" -font 'JetBrainsMono Nerd Font Mono 12' | cliphist decode | wl-copy
+bindsym $mod+c exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
 
 # 通知快捷键 (Fnott)
 bindsym $mod+n exec fnottctl dismiss                          # 关闭当前通知
