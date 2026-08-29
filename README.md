@@ -1,11 +1,12 @@
 # Alpine-Sway-Dotfiles
 ## Introduction
 ### What is it?
-This repo is the dot files of my sway on Alpine Linux. It keeps simple and easy to read. And there is something else to help me setup my Alpines. Hope it can help you.
-It's best to use it on Alpine Linux, but you can fork it and use it on other distros.  
+This repo contains the dotfiles for my Sway setup on Alpine Linux. It is kept simple and easy to read, and it also includes some helpers for setting up Alpine. I hope it can help you too.
 
-### Why there isn't a `setup.sh`?
-There isn't a `setup.sh` because I'm afraid of that it may cover your configs. So you'd better backup some parts of your configs and then copy the configs in this repo to your system by yourself.
+It is best used on Alpine Linux, but you can fork it and adapt it to other distros.
+
+### Why is there no `setup.sh`?
+There is no `setup.sh` because I am worried that it might overwrite your existing configs. So you should back up the configs you already have, and then copy the ones in this repo to your system yourself.
 
 ## Requirements
 ### Core packages
@@ -19,7 +20,7 @@ There isn't a `setup.sh` because I'm afraid of that it may cover your configs. S
 7.  `seatd`
 8.  `doas` (Optional: `doas-sudo-shim`)
 9.  `elogind`
-10. `udisks2` 
+10. `udisks2`
 11. `polkit-elogind`
 
 #### Audio
@@ -50,7 +51,7 @@ There isn't a `setup.sh` because I'm afraid of that it may cover your configs. S
 8.  `wl-clipboard`
 9.  `cliphist`
 10. `fnott`
-11. `rofi` or `fuzzel` *\(Fuzzel for default. Change the default one in `~/.config/waybar/config` and `~/.config/sway/config.d/keybindings.sway`\)*
+11. `rofi` or `fuzzel` *\(Fuzzel is the default. Change the default in `~/.config/waybar/config` and `~/.config/sway/config.d/keybindings.sway`\)*
 12. `grimshot`
 13. `foot`
 
@@ -61,9 +62,10 @@ There isn't a `setup.sh` because I'm afraid of that it may cover your configs. S
 4. `font-noto-music`
 5. `font-jetbrains-mono-nerd`
 
-## The way to install
-First, I recommend you to run `su -c 'setup-desktop sway'`, then some packages like `sway`, `swaybg` will be installed automaticly.
-Then, install the packages above and copy the configs in `user-home/.config/`:
+## Installation
+First, I recommend running `su -c 'setup-desktop sway'`, which will install some packages like `sway` and `swaybg` automatically.
+
+Then install the packages above and copy the configs in `user-home/.config/`:
 ```sh
 # Make sure you're in the repo path
 mkdir -p ~/.config && cp ./user-home/.config/{sway,swaylock,waybar,fuzzel,fnott,foot} ~/.config/
