@@ -40,7 +40,6 @@ bindsym $mod+n exec fnottctl dismiss                          # 关闭当前通�
 bindsym $mod+Shift+n exec fnottctl dismiss all                # 清空所有通知
 bindsym $mod+Ctrl+n exec fnottctl dismiss-with-default-action # 触发默认操作并关闭
 
-# 电源操作快捷键
 bindsym $mod+x exec ~/.config/waybar/scripts/power.sh
 
 # ------------------------------
@@ -146,3 +145,10 @@ bindsym --locked XF86AudioNext exec playerctl next
 bindsym --locked XF86AudioStop exec playerctl stop
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+
+# 上一工作区
+bindsym $mod+Page_Up workspace prev      # Mod+PageUp
+bindgesture swipe:4:left workspace next  # 四指左划
+# 下一工作区
+bindsym $mod+Page_Down workspace next    # Mod+PageDn
+bindgesture swipe:4:right workspace prev # 四指右划
