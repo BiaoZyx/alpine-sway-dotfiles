@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces", "sway/mode", "custom/layout"],
     "modules-center": ["custom/privacy", "sway/window"],
-    "modules-right": ["network", "pulseaudio", "cpu", "memory", "clock", /*"custom/clipman", "custom/notif",*/ "tray", "custom/power"],
+    "modules-right": ["network", "pulseaudio", "cpu", "memory", "clock", "battery", /*"custom/clipman", "custom/notif",*/ "tray", "custom/power"],
 
     "sway/workspaces": {
         //"disable-scroll": true,
@@ -18,6 +18,19 @@
 
     "sway/window": {
         "max-length": 40
+    },
+
+    "battery": {
+        "interval": 30,
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-plugged": "󰚥 {capacity}%",
+        "format-full": "󰁹 {capacity}%",
+        "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     },
 
     "clock": {
