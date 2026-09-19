@@ -188,6 +188,9 @@ c.content.headers.accept_language = "zh-CN,zh;q=0.9,en;q=0.8"
 # 优先请求深色网页（深浅跟随系统，由上方 _apply_m3 设置）
 c.colors.webpage.darkmode.policy.images = 'never'
 
+# 网页平滑滚动
+c.scrolling.smooth = True
+
 # 下载
 c.downloads.location.directory = "~/Downloads"    # 下载目录（记得改）
 c.downloads.position = "bottom"    # 下载栏位置（底部）
