@@ -36,6 +36,7 @@
     "clock": {
         "format": "{:%H:%M}",
         "format-alt": "{:%a %d %b}",
+        "tooltip": true,
         "tooltip-format": "{:%Y-%m-%d %H:%M}"
     },
 
@@ -43,6 +44,7 @@
         "format-wifi": " {signalStrength}%",
         "format-ethernet": " 󰈀 ",
         "format-disconnected": "  ",
+        "tooltip": true,
         "tooltip-format": "{essid} ({signalStrength}%)"
     },
 
@@ -64,14 +66,16 @@
         "exec": "~/.config/waybar/scripts/layout_indicator.sh",
         "return-type": "json",
         "interval": 0.5,
-        "format": "{}"
+        "format": "{}",
+        "tooltip": false
     },
     
     "custom/privacy": {
         "exec": "~/.config/waybar/scripts/privacy_indicator.sh",
         "return-type": "json",
         "interval": 0.5,
-        "format": "{}"
+        "format": "{}",
+        "tooltip": false
     },
 
     "custom/power": {
@@ -99,12 +103,14 @@
 
     "cpu": {
         "format": "{usage}% ",
-        "interval": 2
+        "interval": 2,
+        "tooltip": true
     },
 
     "memory": {
         "format": "{percentage}% ",
-        "interval": 2
+        "interval": 2,
+        "tooltip": true
     }
 }
 

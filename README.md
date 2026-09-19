@@ -20,6 +20,8 @@ Privacy indicator (mic/camera in use):
 
 ![Privacy Indicator](./screenshot2.png)
 
+> Actually, the new version has an "H/V/S/T/F"(Layout Indicator) with different colours on the Waybar. But I'm lazy to shot the screen...
+
 ## Requirements
 ### Core packages
 #### System

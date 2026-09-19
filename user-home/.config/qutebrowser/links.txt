@@ -1,0 +1,9 @@
+# 常用链接：名称 | 网址 | 图标（图标可留空）
+# 由浏览器编辑生成；如需手动修改，先在此文件改完再执行 :config-source
+
+GitHub | https://github.com | github
+DeepSeek | https://chat.deepseek.com | chat
+B站 | https://www.bilibili.com | live
+南大镜像 | https://help.mirror.nju.edu.cn | storage
+开源镜像 | https://help.mirrors.cernet.edu.cn | download
+Lichess | https://lichess.org | flag

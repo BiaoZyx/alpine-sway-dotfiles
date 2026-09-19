@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+import os, json, urllib.parse
+
+def reply(msg):
+    fifo = os.environ.get('QUTE_FIFO')
+    if fifo:
+        try:
+            text = msg.replace('"', '”')
+            with open(fifo, 'w', encoding='utf-8') as f:
+                f.write('message-info "{}"\n'.format(text))
+        except Exception:
+            pass
+    try:
+        print(msg)
+    except Exception:
+        pass
+
+def main():
+    url = os.environ.get('QUTE_URL', '')
+    marker = '#qblinks='
+    idx = url.find(marker)
+    if idx < 0:
+        reply('未找到链接数据：请先停留在主页（home.html）再按 ,s')
+        return
+    raw = urllib.parse.unquote(url[idx + len(marker):])
+    try:
+        data = json.loads(raw)
+    except Exception as e:
+        reply('解析链接数据失败：' + str(e))
+        return
+    if not isinstance(data, list):
+        reply('链接数据格式错误')
+        return
+    cfg_dir = os.environ.get('QUTE_CONFIG_DIR') or os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(cfg_dir, 'links.txt')
+    lines = []
+    for item in data:
+        if not isinstance(item, dict):
+            continue
+        name = item.get('name', '')
+        link = item.get('url', '')
+        icon = item.get('icon', '')
+        lines.append((' | '.join([name, link, icon])).rstrip(' |'))
+    content = '# 常用链接：名称 | 网址 | 图标（图标可留空）\n'
+    content += '# 由浏览器编辑生成；如需手动修改，先在此文件改完再执行 :config-source\n\n'
+    content += '\n'.join(lines) + '\n'
+    tmp = path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        f.write(content)
+    os.replace(tmp, path)
+    js = 'var LINKS=' + json.dumps(data, ensure_ascii=False, separators=(', ', ': ')) + ';'
+    js_path = os.path.join(cfg_dir, 'links.js')
+    with open(js_path, 'w', encoding='utf-8') as f:
+        f.write(js)
+    reply('已将 %d 条常用链接写入 links.txt 并同步 links.js' % len(data))
+
+main()

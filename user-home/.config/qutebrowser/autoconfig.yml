@@ -6,13 +6,29 @@
 
 config_version: 2
 settings:
+  content.blocking.enabled:
+    https://signup.simcc.net.cn/: false
+  content.headers.do_not_track:
+    global: false
+  content.headers.user_agent:
+    coding.qq.com: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/140.0.0.0 Safari/537.36
   content.javascript.clipboard:
+    file://: access-paste
     https://chat.deepseek.com: access-paste
+    https://codeberg.org: access-paste
     https://danklinux.com: access-paste
+    https://gh-proxy.com: access-paste
     https://github.com: access-paste
     https://help.mirror.nju.edu.cn: access-paste
     https://help.mirrors.cernet.edu.cn: access-paste
     https://lichess.org: access-paste
+  content.mouse_lock:
+    http://copy.sh: true
+  content.proxy:
+    global: system
+  content.user_stylesheets:
+    global: []
   editor.command:
     global:
     - micro
