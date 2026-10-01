@@ -2,7 +2,7 @@
 " Vimore
 " 作者: BiaoZyx
 " 邮箱: BiaoZyx@outlook.com
-" 版本: 3.14
+" 版本: 3.14.4
 " ============================================================
 "  _   ___
 " | | / (_)_ _  ___  _______
@@ -12,7 +12,17 @@
 " ============================================================
 " 备注: 普通vim可能剪切板支持不好，建议安装gvim以使用vim
 " ============================================================
+" 记得更改这个，将用于文件头生成
+let author = "Change it in ~/.vimrc"
+let email  = "Change it in ~/.vimrc"
 
+" ============================================================
+" 插件设置 (根据需求)
+" ============================================================
+" === ALE(Example) ===
+" let g:ale_linters = {
+    " \ 'sh': ['language_server'],
+    " \ }
 
 " ============================================================
 " 1. 基础设置
@@ -45,14 +55,25 @@ filetype plugin on
 set number                    " 显示行号
 set relativenumber            " 显示相对行号
 set cursorline                " 高亮当前行
-set cursorcolumn              " 高亮当前列
+"set cursorcolumn              " 高亮当前列
 "set noshowcmd                 " 不显示命令（减少回显）
 set noshowmode                " 不显示 --INSERT-- 等（状态栏已显示）
 set laststatus=2              " 始终显示状态栏
 set ruler                     " 显示光标位置
 set title                     " 设置终端标题
 set ttyfast                   " 快速终端连接
-set lazyredraw                " 延迟屏幕更新（提高性能）
+"set lazyredraw                " 延迟屏幕更新（提高性能）
+
+" 进入插入模式时使用绝对行号
+autocmd InsertEnter * set norelativenumber
+autocmd InsertEnter * set number
+
+" 退出插入模式时使用相对行号
+autocmd InsertLeave * set relativenumber
+
+" 限制语法同步范围 (避免 Vim 每次重绘都从头解析整个文件)
+syntax sync minlines=200
+syntax sync maxlines=500
 
 " ============================================================
 " 3. 状态栏
@@ -171,6 +192,18 @@ set hidden
 set history=2000
 set undolevels=1000
 set undofile
+
+" 自动创建目录
+if !isdirectory(expand('~/.vim/undodir'))
+  call mkdir(expand('~/.vim/undodir'), 'p')
+endif
+if !isdirectory(expand('~/.vim/backupdir'))
+  call mkdir(expand('~/.vim/backupdir'), 'p')
+endif
+if !isdirectory(expand('~/.vim/swapdir'))
+  call mkdir(expand('~/.vim/swapdir'), 'p')
+endif
+
 set undodir=~/.vim/undodir
 set backupdir=~/.vim/backupdir
 set directory=~/.vim/swapdir
@@ -200,6 +233,10 @@ autocmd FileType go setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
 autocmd FileType javascript,typescript,html,css,json,yaml,markdown setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType c,cpp,java,rust setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 
+" 普通模式：单按 < / > 缩进当前行
+nnoremap <silent> < :<C-u>silent! normal! <<<CR>
+nnoremap <silent> > :<C-u>silent! normal! >><CR>
+
 " ============================================================
 " 6. 搜索与替换
 " ============================================================
@@ -218,24 +255,34 @@ set backspace=indent,eol,start
 set whichwrap+=<,>,h,l,b,s
 set scrolloff=5
 set sidescrolloff=5
-set sidescroll=1
+set sidescroll=5
 set virtualedit=block
-set selection=exclusive
-set selectmode=mouse,key
+set selection=inclusive " 光标下字符也选中
+"set selectmode=mouse,key
 set mouse=a
 set mousemodel=popup
 set ttymouse=sgr
 set keymodel=startsel,stopsel
+
 " 插入模式下设置为闪烁竖线 (solid vertical bar)
 let &t_SI = "\<Esc>[5 q"
 " 正常模式下设置为闪烁方块 (solid block)
 let &t_EI = "\<Esc>[1 q"
+" 进入选择模式：稳定方块
+let &t_SS = "\<Esc>[2 q"
+" 退出选择模式：恢复普通模式方块
+let &t_SE = "\<Esc>[1 q"
+" 进入可视模式：稳定方块
+autocmd ModeChanged *:[vV\x16]* silent !echo -ne "\e[2 q"
+" 退出可视模式：恢复普通模式方块
+autocmd ModeChanged [vV\x16]*:* silent !echo -ne "\e[1 q"
 set timeoutlen=300   " 缩短普通映射超时（单位毫秒）
 set ttimeoutlen=50   " 缩短按键码（如功能键、方向键）超时
 
-" 黑洞寄存器命令 :D 删除不进任何寄存器
-command! -range -bar D <line1>,<line2>delete _
-cabbrev d <c-r>=(getcmdpos()==1 && getcmdtype()==':' ? 'D' : 'd')<CR>
+function! SaveAndClear()
+    write
+    call timer_start(2000, {-> execute('echo ""', '')})
+endfunction
 
 " ============================================================
 " 8. 括号/引号智能补全
@@ -273,11 +320,11 @@ function! SmartCondition(char)
     endif
 endfunction
 " 应用特殊映射
-inoremap <silent> { <C-r>=SmartCondition('{')<CR>
+"inoremap <silent> { <C-r>=SmartCondition('{')<CR>  " 不再补全左大括号
 inoremap <silent> < <C-r>=SmartCondition('<')<CR>
 inoremap <silent> " <C-r>=SmartCondition('"')<CR>
 
-inoremap <silent> ' <C-r>=SmartQuote("'")<CR>
+"inoremap <silent> ' <C-r>=SmartQuote("'")<CR>
 
 function! SmartPair(left, right)
     let line = getline('.')
@@ -423,15 +470,14 @@ function! SmartBackspace()
     return "\<BS>"
 endfunction
 
-" 手动成对删除（快捷键：空格+d）
-nnoremap <silent> <leader>d :call DeletePair()<CR>
-
 function! DeletePair()
     silent!
     let line = getline('.')
     let col = col('.') - 1
     let pairs = {'(' : ')', '[' : ']', '{' : '}', '"' : '"', "'" : "'"}
+    let reverse = {')' : '(', ']' : '[', '}' : '{'}
 
+    " 情况 1：光标前是左括号 → 找右边配对
     if col > 0
         let char_before = line[col - 1]
         if has_key(pairs, char_before)
@@ -442,36 +488,82 @@ function! DeletePair()
                 return
             endif
         endif
+        " 情况 1b：光标前是右括号 → 找左边配对
+        if has_key(reverse, char_before)
+            let left = reverse[char_before]
+            let start_pos = s:find_matching_left(col - 1, left, char_before)
+            if start_pos != -1
+                call setline('.', line[:start_pos-1] . line[col:])
+                call cursor('.', start_pos + 1)
+                return
+            endif
+        endif
     endif
 
+    " 情况 2：光标后是左括号 → 找右边配对
     if col < len(line)
         let char_after = line[col]
-        for [left, right] in items(pairs)
-            if char_after == left
-                let end_pos = s:find_matching_right(col, left, right)
-                if end_pos != -1
-                    call setline('.', line[:col-1] . line[col+1:end_pos-1] . line[end_pos+1:])
-                    call cursor('.', col + 1)
-                    return
-                endif
+        if has_key(pairs, char_after)
+            let end_pos = s:find_matching_right(col, char_after, pairs[char_after])
+            if end_pos != -1
+                call setline('.', line[:col-1] . line[col+1:end_pos] . line[end_pos+1:])
+                call cursor('.', col + 1)
+                return
             endif
-        endfor
+        endif
+        " 情况 2b：光标后是右括号 → 找左边配对
+        if has_key(reverse, char_after)
+            let left = reverse[char_after]
+            let start_pos = s:find_matching_left(col, left, char_after)
+            if start_pos != -1
+                call setline('.', line[:start_pos-1] . line[col+1:])
+                call cursor('.', start_pos + 1)
+                return
+            endif
+        endif
+    endif
+
+    " 情况 3：光标在括号内部 → 找包含光标的最近一对
+    let enclosing = s:find_enclosing(col, pairs, reverse)
+    if enclosing != []
+        let [start_pos, end_pos] = enclosing
+        call setline('.', line[:start_pos-1] . line[start_pos+1:end_pos] . line[end_pos+1:])
+        call cursor('.', start_pos + 1)
+        return
     endif
 
     echo "没有找到要成对删除的括号/引号"
 endfunction
 
+" 从右括号位置往左找配对的左括号
+function! s:find_matching_left(start, left, right)
+    let line = getline('.')
+    let pos = a:start - 1
+    let cnt = 1
+    while pos >= 0
+        if line[pos] == a:right
+            let cnt += 1
+        elseif line[pos] == a:left
+            let cnt -= 1
+            if cnt == 0
+                return pos
+            endif
+        endif
+        let pos -= 1
+    endwhile
+    return -1
+endfunction
+
 function! s:find_matching_right(start, left, right)
-    silent!
     let line = getline('.')
     let pos = a:start + 1
-    let count = 1
+    let cnt = 1
     while pos < len(line)
         if line[pos] == a:left
-            let count += 1
+            let cnt += 1
         elseif line[pos] == a:right
-            let count -= 1
-            if count == 0
+            let cnt -= 1
+            if cnt == 0
                 return pos
             endif
         endif
@@ -480,20 +572,39 @@ function! s:find_matching_right(start, left, right)
     return -1
 endfunction
 
-" ============================================================
-" 9. 复制粘贴（系统剪切板）
-" ============================================================
-" 复制 (<C-S-c>在有的终端有问题，留<C-c>备用)
-vnoremap <C-S-c> "+y
-nnoremap <C-S-c> "+y
-vnoremap <C-c> "+y
-nnoremap <C-c> "+y
+" 找包含光标位置的最近一对括号
+function! s:find_enclosing(col, pairs, reverse)
+    let line = getline('.')
+    " 往左找最近的左括号
+    let pos = a:col - 1
+    while pos >= 0
+        let ch = line[pos]
+        if has_key(a:pairs, ch)
+            let end_pos = s:find_matching_right(pos, ch, a:pairs[ch])
+            if end_pos != -1 && end_pos >= a:col
+                return [pos, end_pos]
+            endif
+        endif
+        let pos -= 1
+    endwhile
+    return []
+endfunction
 
-" 粘贴：仅 Ctrl+Shift+V
-nnoremap <C-S-v> "+p
-vnoremap <C-S-v> "+p
+" ============================================================
+" 9. 复制粘贴 (手动切换内置/系统寄存器)
+" ============================================================
+" 复制到系统剪切板：<Leader>y
+nnoremap <Leader>y "+y
+vnoremap <Leader>y "+y
 
-set pastetoggle=<F11>
+" 从系统剪切板粘贴：<Leader>p / <Leader>P
+nnoremap <Leader>p "+p
+nnoremap <Leader>P "+P
+vnoremap <Leader>p "+p
+vnoremap <Leader>P "+P
+
+" 粘贴模式开关
+set pastetoggle=<F2>
 
 " ============================================================
 " 10. 快速注释
@@ -525,11 +636,8 @@ function! GetCommentEndStr()
     return ''
 endfunction
 
-" 空格+/ 注释/取消注释
-nnoremap <silent> <leader>/ :call ToggleComment()<CR>
-vnoremap <silent> <leader>/ :call ToggleCommentVisual()<CR>
-
 function! ToggleComment()
+
     let line = getline('.')
     let comment = GetCommentStr()
     let comment_end = GetCommentEndStr()
@@ -580,11 +688,6 @@ endfunction
 " ============================================================
 " 11. 终端集成
 " ============================================================
-nnoremap <silent> <leader>tt :call OpenTerminal('horizontal')<CR>
-nnoremap <silent> <leader>tv :call OpenTerminal('vertical')<CR>
-nnoremap <silent> <leader>tr :call RunInTerminal()<CR>
-nnoremap <silent> <leader>tk :call ToggleTerminal()<CR>
-
 " 终端退出
 tnoremap <Esc> <C-\><C-n>
 tnoremap <C-c> <C-\><C-n>
@@ -627,17 +730,51 @@ function! GetRunCommand()
     endif
 endfunction
 
-function! RunInTerminal()
+" 找到最新的终端 buffer
+function! s:FindLatestTerminal()
+    let term_bufs = []
+    for buf in range(1, bufnr('$'))
+        if getbufvar(buf, '&buftype') == 'terminal'
+            call add(term_bufs, buf)
+        endif
+    endfor
+    if empty(term_bufs)
+        return -1
+    endif
+    " bufnr 越大说明越新
+    return max(term_bufs)
+endfunction
+
+" 在最新终端里运行当前文件
+function! RunInLatestTerminal()
     let cmd = GetRunCommand()
     if cmd == ''
         echo "不支持的文件类型: " . &filetype
         return
     endif
     silent! write
-    botright terminal
-    execute "resize " . (&lines / 3)
-    call feedkeys(cmd . "\<CR>")
+
+    let term_buf = s:FindLatestTerminal()
+
+    if term_buf == -1
+        " 没有终端，新开一个
+        botright terminal
+        execute "resize " . (&lines / 3)
+    else
+        " 有终端，切到它的窗口
+        let win = bufwinnr(term_buf)
+        if win == -1
+            " buffer 存在但窗口关了，重新打开
+            execute "botright split | buffer " . term_buf
+            execute "resize " . (&lines / 3)
+            let win = bufwinnr(term_buf)
+        endif
+        execute win . "wincmd w"
+    endif
+
+    " 进入终端模式并发送命令
     startinsert
+    call feedkeys(cmd . "\<CR>", 'n')
 endfunction
 
 function! ToggleTerminal()
@@ -727,68 +864,7 @@ function! MyFoldText()
 endfunction
 
 " ============================================================
-" 14. Leader 快捷键（空格前缀）
-" ============================================================
-" 辅助函数：保存并 2 秒后清空消息
-function! SaveAndClear()
-    write
-    call timer_start(2000, {-> execute('echo ""', '')})
-endfunction
-
-
-" 搜索
-nnoremap <silent> <leader>h :nohlsearch<CR>
-
-" 文件操作
-nnoremap <leader>w :call SaveAndClear()<CR>
-nnoremap <silent> <leader>q :silent! quit<CR>
-nnoremap <leader>x :call SaveAndClear()<CR>:silent! quit<CR>
-nnoremap <silent> <leader>W :silent! wall<CR>
-nnoremap <silent> <leader>Q :silent! qall<CR>
-
-" 代码功能
-nnoremap <silent> <leader>f :call FormatCode()<CR>
-nnoremap <silent> <leader>c :call CheckCode()<CR>
-
-" 折叠
-nnoremap <silent> <leader><leader> :silent! za<CR>   " 空格+空格 切换折叠
-nnoremap <silent> <leader>z zM                       " 全部折叠
-nnoremap <silent> <leader>Z zR                       " 全部展开
-
-" 配置管理
-nnoremap <silent> <leader>sv :source $MYVIMRC<CR>
-nnoremap <silent> <leader>ev :e $MYVIMRC<CR>
-nnoremap <silent> <leader>dd :g/^\s*$/d<CR>
-
-" Git
-nnoremap <silent> <leader>gs :!git status<CR>
-nnoremap <silent> <leader>gd :!git diff<CR>
-nnoremap <silent> <leader>gl :!git log --oneline --graph<CR>
-nnoremap <silent> <leader>ga :!git add %<CR>
-nnoremap <silent> <leader>gc :!git commit -m "<C-r>=input('Commit: ')<CR>"<CR>
-nnoremap <silent> <leader>gp :!git push<CR>
-nnoremap <silent> <leader>gP :!git pull<CR>
-
-" 十六进制
-nnoremap <silent> <leader>hx :%!xxd<CR>
-nnoremap <silent> <leader>hX :%!xxd -r<CR>
-
-" 排序
-vnoremap <silent> <leader>s :sort<CR>
-vnoremap <silent> <leader>su :sort u<CR>
-vnoremap <silent> <leader>sn :sort n<CR>
-
-" 统计
-nnoremap <silent> <leader>wc g<C-g>
-
-" 寄存器
-nnoremap <silent> <leader>r :reg<CR>
-
-" 行尾空格清理
-nnoremap <silent> <leader>ws :call StripTrailingWhitespaceManual()<CR>
-
-" ============================================================
-" 15. 行尾空格显示与清理
+" 14. 行尾空格显示与清理
 " ============================================================
 highlight ExtraWhitespace ctermfg=240 guifg=#666666 ctermbg=NONE guibg=NONE
 match ExtraWhitespace /\s\+$/
@@ -813,7 +889,7 @@ function! StripTrailingWhitespaceManual()
 endfunction
 
 " ============================================================
-" 16. 边界线
+" 15. 边界线
 " ============================================================
 if exists('+colorcolumn')
     set colorcolumn=120
@@ -821,7 +897,7 @@ if exists('+colorcolumn')
 endif
 
 " ============================================================
-" 17. 普通快捷键（无 leader）
+" 16. 普通快捷键（无 leader）
 " ============================================================
 " 保存
 nnoremap <C-s> :call SaveAndClear()<CR>
@@ -840,11 +916,10 @@ nnoremap <silent> <C-t> :tabnew<CR>
 nnoremap <silent> <C-w> :tabclose<CR>
 
 " 全选复制
-map <C-a> ggVG$"+y
 vnoremap <C-x> "+x
 
 " ============================================================
-" 18. F 键快捷键
+" 17. F 键快捷键
 " ============================================================
 nnoremap <silent> <F3> :Explore<CR>          " 文件浏览器
 nnoremap <silent> <F4> :Vexplore<CR>         " 垂直浏览器
@@ -856,7 +931,7 @@ nnoremap <silent> <F10> :call FormatCode()<CR> " 自动格式化
 nnoremap <silent> <F7> :set wrap!<CR>:echo "wrap = " . &wrap<CR>  " 切换自动换行
 
 " ============================================================
-" 19. 运行、调试、格式化、检查函数
+" 18. 运行、调试、格式化、检查函数
 " ============================================================
 func! RunCode()
     silent! write
@@ -868,7 +943,7 @@ func! RunCode()
     elseif ft == 'c'
         exec "!gcc % -o %< -Wall -Wextra -O2 && ./%<"
     elseif ft == 'cpp'
-        exec "!g++ % -o %< -std=c++17 -Wall -Wextra -O2 && ./%<"
+        exec "!g++ % -o %< -Wall -Wextra -O2 && ./%<"
     elseif ft == 'javascript'
         exec "!node %"
     elseif ft == 'sh'
@@ -1000,7 +1075,7 @@ func! CheckCode()
 endfunc
 
 " ============================================================
-" 20. 文件浏览器配置
+" 19. 文件浏览器配置
 " ============================================================
 let g:netrw_banner=0
 let g:netrw_liststyle=3
@@ -1012,7 +1087,7 @@ let g:netrw_preview=1
 let g:netrw_sort_sequence='[\/]$,*'
 
 " ============================================================
-" 21. 文件头自动生成
+" 20. 文件头自动生成
 " ============================================================
 autocmd BufNewFile *.py,*.go,*.sh,*.c,*.cpp,*.java,*.js,*.ts,*.rs,*.lua call s:SetTitle()
 
@@ -1021,8 +1096,6 @@ function! s:SetTitle()
         return
     endif
 
-    let author = "BiaoZyx"
-    let email = "BiaoZyx@outlook.com"
     let date = strftime("%Y-%m-%d %H:%M:%S")
 
     if &filetype == 'python'
@@ -1111,82 +1184,14 @@ function! s:SetTitle()
 endfunction
 
 " ============================================================
-" 22. 自动命令
+" 21. 自动命令
 " ============================================================
 autocmd FocusGained,BufEnter * :silent! checktime
 autocmd BufEnter * :silent! lcd %:p:h
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g'\"" | endif
 
 " ============================================================
-" 23. 帮助
-" ============================================================
-function! VimMoreHelp()
-    echo ""
-    echo "    ╔══════════════════════════════════════════════════════════════════╗"
-    echo "    ║                         vimore 帮助                              ║"
-    echo "    ╠══════════════════════════════════════════════════════════════════╣"
-    echo "    ║  基础操作:                                                       ║"
-    echo "    ║    SPC-w   保存                 SPC-q  退出                      ║"
-    echo "    ║    SPC-x   保存并退出           SPC-h  取消搜索高亮              ║"
-    echo "    ║    SPC-W   全部保存             SPC-Q  全部退出                  ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  编程功能:                                                       ║"
-    echo "    ║    SPC-/   快速注释             SPC-c  代码检查                  ║"
-    echo "    ║    SPC-f   格式化代码           <F3>   文件浏览器                ║"
-    echo "    ║    <F4>    垂直浏览器           <F5>   运行代码                  ║"
-    echo "    ║    <F6>    调试代码             <F8>   代码检查                  ║"
-    echo "    ║    <F9>    基础格式化           <F10>  自动格式化                ║"
-    echo "    ║    <F11>   粘贴模式切换                                          ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  折叠:                                                           ║"
-    echo "    ║    SPC-SPC 切换折叠             SPC-z  全部折叠                  ║"
-    echo "    ║    SPC-Z   全部展开                                              ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  终端:                                                           ║"
-    echo "    ║    SPC-tt  底部终端             SPC-tv  右侧终端                 ║"
-    echo "    ║    SPC-tr  运行当前文件         SPC-tk  切换/关闭终端            ║"
-    echo "    ║    Esc     终端回到普通模式                                      ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  标签页:                                                         ║"
-    echo "    ║    SPC-tn  新建标签             SPC-tc  关闭标签                 ║"
-    echo "    ║    SPC-to  保留当前标签         SPC-tl  列出标签                 ║"
-    echo "    ║    SPC-1~9 跳转标签             SPC-0   跳转第10个               ║"
-    echo "    ║    SPC-tu  恢复关闭标签         SPC-td  新标签打开目录           ║"
-    echo "    ║    SPC-te  新标签编辑当前       SPC-tm  移动标签                 ║"
-    echo "    ║    SPC-tM  左移标签             SPC-tN  右移标签                 ║"
-    echo "    ║    SPC-tr  重命名标签           SPC-ft  新标签查找文件           ║"
-    echo "    ║    S-Left/Right  标签页切换     C-t  新建   C-w  关闭            ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  导航:                                                           ║"
-    echo "    ║    C-h/j/k/l  窗口切换                                           ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  Git:                                                            ║"
-    echo "    ║    SPC-gs 状态   SPC-gd 差异   SPC-gl 日志   SPC-ga 添加         ║"
-    echo "    ║    SPC-gc 提交   SPC-gp 推送   SPC-gP 拉取                       ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  配置:                                                           ║"
-    echo "    ║    SPC-sv  重新加载配置         SPC-ev  编辑配置                 ║"
-    echo "    ║    SPC-ws  删除行尾空格         SPC-dd  删除空行                 ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  其他:                                                           ║"
-    echo "    ║    SPC-d   成对删除括号/引号    SPC-r   查看寄存器               ║"
-    echo "    ║    SPC-wc  统计字数             SPC-hx  十六进制模式             ║"
-    echo "    ║    SPC-hX  退出十六进制         SPC-s   排序选中行               ║"
-    echo "    ║    SPC-su  去重排序             SPC-sn  数字排序                 ║"
-    echo "    ║    C-c     复制到系统剪切板     C-v     从系统剪切板粘贴         ║"
-    echo "    ║    C-s     保存（含插入模式）   C-a     全选复制                 ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  命令:  :D  黑洞删除            :HelpVimore  帮助                ║"
-    echo "    ║                                                                  ║"
-    echo "    ║  *SPC = 空格键                                                   ║"
-    echo "    ╚══════════════════════════════════════════════════════════════════╝"
-    echo ""
-endfunction
-
-command! HelpVimore call VimMoreHelp()
-
-" ============================================================
-" 24. 标签栏
+" 22. 标签栏
 " ============================================================
 set showtabline=1
 
@@ -1236,29 +1241,302 @@ endfunction
 set tabline=%!MyTabLine()
 
 " ============================================================
-" 25. 标签页快捷键
+" 23. Leader 提示菜单 (仿 which-key / Helix)
 " ============================================================
-nnoremap <silent> <leader>tn :tabnew<CR>
-nnoremap <leader>te :tabedit %<CR>
-nnoremap <silent> <leader>tc :tabclose<CR>
-nnoremap <silent> <leader>to :tabonly<CR>
+let g:leader_menu = {
+    \ 'w':  {
+        \ 'name': '写入',
+        \ 'w': ['保存',           function('SaveAndClear')],
+        \ 's': ['清理行尾空格',   function('StripTrailingWhitespaceManual')],
+        \ 'c': ['统计字数',       ':normal! g<C-g><CR>'],
+    \ },
+    \ 'q':  ['退出',              ':silent! quit<CR>'],
+    \ 'W':  ['全部保存',          ':silent! wall<CR>'],
+    \ 'Q':  ['全部退出',          ':silent! qall<CR>'],
+    \ 'h':  {
+        \ 'name': '显示',
+        \ 'h': ['取消搜索高亮',   ':nohlsearch<CR>'],
+        \ 'x': ['十六进制模式',   ':%!xxd<CR>'],
+        \ 'X': ['退出十六进制',   ':%!xxd -r<CR>'],
+    \ },
+    \ 'f':  ['格式化代码',        function('FormatCode')],
+    \ 'c':  {
+        \ 'name': '维护',
+        \ 'c': ['代码检查',       function('CheckCode')],
+        \ 'v': ['重新加载配置',   ':source $MYVIMRC<CR>'],
+        \ 'e': ['编辑配置',       ':e $MYVIMRC<CR>'],
+    \ },
+    \ '/':  ['注释/取消注释',     function('ToggleComment')],
+    \ 'b':  {
+        \ 'name': '括号',
+        \ 'd': {
+            \ 'name': '删除指定括号对及其内容',
+            \ '(': ['圆括号',  ':call DeleteEnclosingPair("(")<CR>'],
+            \ '[': ['方括号',  ':call DeleteEnclosingPair("[")<CR>'],
+            \ '{': ['花括号',  ':call DeleteEnclosingPair("{")<CR>'],
+            \ '"': ['双引号',  ':call DeleteEnclosingPairCode(34)<CR>'],
+            \ "'": ['单引号',  ':call DeleteEnclosingPairCode(39)<CR>'],
+        \ },
+        \ 'a': {
+            \ 'name': '在可视选区外添加指定括号',
+            \ '(': ['圆括号',  ':call AddPair("(")<CR>'],
+            \ '[': ['方括号',  ':call AddPair("[")<CR>'],
+            \ '{': ['花括号',  ':call AddPair("{")<CR>'],
+            \ '"': ['双引号',  ':call AddPairCode(34)<CR>'],
+            \ "'": ['单引号',  ':call AddPairCode(39)<CR>'],
+        \ },
+    \ },
+    \ 'r':  ['查看寄存器',        ':reg<CR>'],
+    \ 'z':  {
+        \ 'name': '视图',
+        \ 'z': ['全部折叠',       ':normal! zM<CR>'],
+        \ 'a': ['切换折叠',       ':normal! za<CR>'],
+        \ 'Z': ['全部展开',       ':normal! zR<CR>'],
+    \ },
+    \ 'y':  ['复制到系统剪切板',  ':normal! "+y<CR>'],
+    \ 'p':  ['从系统剪切板粘贴',  ':normal! "+p<CR>'],
+    \ 'P':  ['从系统剪切板粘贴(前)', ':normal! "+P<CR>'],
+    \ 's':  {
+        \ 'name': '整理',
+        \ 'd': ['删除空行',       ':silent! g/^\s*$/d<CR>'],
+        \ 's': ['排序选中行',     ':sort<CR>'],
+        \ 'u': ['去重排序',       ':sort u<CR>'],
+        \ 'n': ['数字排序',       ':sort n<CR>'],
+    \ },
+    \ 'g':  {
+        \ 'name': 'Git',
+        \ 's': ['git status',     ':!git status<CR>'],
+        \ 'd': ['git diff',       ':!git diff<CR>'],
+        \ 'l': ['git log',        ':!git log --oneline --graph<CR>'],
+        \ 'a': ['git add',        ':!git add %<CR>'],
+        \ 'c': ['git commit',     ':!git commit -m "<C-r>=input(''Commit: '')<CR>"<CR>'],
+        \ 'p': ['git push',       ':!git push<CR>'],
+        \ 'P': ['git pull',       ':!git pull<CR>'],
+    \ },
+    \ 't':  {
+        \ 'name': '窗口',
+        \ 't': ['底部终端',       ':call OpenTerminal("horizontal")<CR>'],
+        \ 'v': ['右侧终端',       ':call OpenTerminal("vertical")<CR>'],
+        \ 'r': ['运行当前文件',   function('RunInLatestTerminal')],
+        \ 'k': ['切换/关闭终端',  function('ToggleTerminal')],
+        \ 'n': ['新建标签',       ':tabnew<CR>'],
+        \ 'e': ['新标签编辑当前', ':tabedit %<CR>'],
+        \ 'c': ['关闭标签',       ':tabclose<CR>'],
+        \ 'o': ['保留当前标签',   ':tabonly<CR>'],
+        \ 'M': ['左移标签',       ':tabmove -1<CR>'],
+        \ 'N': ['右移标签',       ':tabmove +1<CR>'],
+        \ 'l': ['列出标签',       ':tabs<CR>'],
+        \ 'u': ['恢复关闭标签',   ':tabnew #<CR>'],
+        \ 'd': ['新标签打开目录', ':tabnew .<CR>'],
+        \ 'f': ['文件浏览器',     ':Explore<CR>'],
+        \ 'F': ['垂直文件浏览器', ':Vexplore<CR>']
+    \ },
+\ }
 
-nnoremap <leader>1 1gt
-nnoremap <leader>2 2gt
-nnoremap <leader>3 3gt
-nnoremap <leader>4 4gt
-nnoremap <leader>5 5gt
-nnoremap <leader>6 6gt
-nnoremap <leader>7 7gt
-nnoremap <leader>8 8gt
-nnoremap <leader>9 9gt
-nnoremap <leader>0 10gt
+" === 可视模式单独快捷键 ===
+xnoremap <Leader>y "+y
+xnoremap <Leader>p "+p
+xnoremap <Leader>P "+P
+xnoremap <silent> <Leader>/ :call ToggleCommentVisual()<CR>
+xnoremap <silent> <Leader>s :sort<CR>
+xnoremap <silent> <Leader>su :sort u<CR>
+xnoremap <silent> <Leader>sn :sort n<CR>
+xnoremap <C-x> "+x
 
-nnoremap <leader>tm :tabmove<CR>
-nnoremap <silent> <leader>tM :tabmove -1<CR>
-nnoremap <silent> <leader>tN :tabmove +1<CR>
-nnoremap <leader>tl :tabs<CR>
-nnoremap <leader>tu :tabnew #<CR>
-nnoremap <leader>td :tabnew .<CR>
-" nnoremap <leader>tr :tabrename<CR>   " 重命名标签（需要插件）
-nnoremap <leader>ft :tabfind *<CR>
+" 缩进
+xnoremap <silent> < <gv
+xnoremap <silent> > >gv
+" 缩进选区并保持选中（方便连续缩进）
+vnoremap <silent> < <gv
+vnoremap <silent> > >gv
+
+" === 依赖函数 ===
+" == Leader b ==
+" 删掉光标所在的整对括号及其内容
+function! DeleteEnclosingPair(left)
+    let pairs = {'(' : ')', '[' : ']', '{' : '}', '"' : '"', "'" : "'"}
+    if !has_key(pairs, a:left)
+        echo "不支持的括号: " . a:left
+        return
+    endif
+    let line = getline('.')
+    let col = col('.') - 1
+    let enclosing = s:find_enclosing_of(col, a:left, pairs[a:left])
+    if enclosing == []
+        echo "光标不在 " . a:left . pairs[a:left] . " 内"
+        return
+    endif
+    let [start_pos, end_pos] = enclosing
+    call setline('.', line[:start_pos-1] . line[end_pos+1:])
+    call cursor('.', start_pos + 1)
+endfunction
+
+function! DeleteEnclosingPairCode(code)
+    call DeleteEnclosingPair(nr2char(a:code))
+endfunction
+
+" 给可视选区加括号
+function! AddPair(pair)
+    let map = {'(' : ')', '[' : ']', '{' : '}', '"' : '"', "'" : "'"}
+    if !has_key(map, a:pair)
+        echo "不支持的括号: " . a:pair
+        return
+    endif
+    let left = a:pair
+    let right = map[left]
+
+    let start_pos = getpos("'<")
+    let end_pos = getpos("'>")
+    if start_pos[1] == 0 || end_pos[1] == 0
+        echo "没有可视选区"
+        return
+    endif
+
+    let start_line = start_pos[1]
+    let end_line = end_pos[1]
+    let start_col = start_pos[2]
+    let end_col = end_pos[2]
+
+    if start_line == end_line
+        let line = getline(start_line)
+        let new_line = line[:start_col-2] . left . line[start_col-1:end_col-1] . right . line[end_col:]
+        call setline(start_line, new_line)
+    else
+        let first = getline(start_line)
+        let last = getline(end_line)
+        call setline(start_line, first[:start_col-2] . left . first[start_col-1:])
+        call setline(end_line, last[:end_col-1] . right . last[end_col:])
+    endif
+endfunction
+
+function! AddPairCode(code)
+    call AddPair(nr2char(a:code))
+endfunction
+
+" === 菜单引擎 ===
+" 渲染菜单为文本行
+function! s:RenderMenu(menu, prefix)
+    let leaf_lines = []
+    let sub_lines = []
+
+    for k in sort(keys(a:menu))
+        if k == 'name'
+            continue
+        endif
+        let item = a:menu[k]
+        if type(item) == v:t_dict
+            " 子菜单：顶层显示 <名字>，子菜单内只显示键
+            if type(item) == v:t_dict
+                let name = has_key(item, 'name') ? item['name'] : k
+                call add(sub_lines, printf(' %-6s <%s>', k, name))
+            else
+                call add(lines, printf(' %-6s %s', k, item[0]))
+            endif
+        else
+            " 叶子节点：顶层带前缀，子菜单内不带
+            if a:prefix == ''
+                call add(leaf_lines, printf(' %-6s %s', k, item[0]))
+            else
+                call add(leaf_lines, printf(' %-6s %s', k, item[0]))
+            endif
+        endif
+    endfor
+
+    if !empty(sub_lines) && !empty(leaf_lines)
+        return leaf_lines + [''] + sub_lines
+    endif
+    return leaf_lines + sub_lines
+endfunction
+
+" 执行菜单项
+function! s:RunMenuItem(item)
+    let l:Action = a:item[1]
+    if type(l:Action) == v:t_func
+        silent call call(l:Action, [])
+    elseif l:Action[0] == ':'
+        " 去掉末尾可能的 <CR>
+        let l:cmd = substitute(l:Action, '<CR>$', '', '')
+        silent execute l:cmd
+    else
+        silent execute 'normal! ' . l:Action
+    endif
+    redraw
+endfunction
+
+" 主提示循环
+function! s:LeaderPrompt()
+    let save_mode = mode()
+    let save_visual = (save_mode == 'v' || save_mode == 'V' || save_mode == "\<C-v>")
+    let save_start = getpos("'<")
+    let save_end = getpos("'>")
+    let save_cur = getpos('.')
+
+    let menu = g:leader_menu
+    let prefix = ''
+
+    while 1
+        let lines = s:RenderMenu(menu, prefix)
+        if empty(lines)
+            let lines = [' (无可用命令)']
+        endif
+
+        let title = ' Leader ' . (prefix == '' ? '' : prefix . ' ')
+        " 如果当前菜单有'name'，拼到标题后面
+        if has_key(menu, 'name')
+            let title .= '- ' . menu['name'] . ' '
+        endif
+        let width = 0
+        for l in lines
+            if len(l) > width | let width = len(l) | endif
+        endfor
+        if width < 24 | let width = 24 | endif
+
+        if exists('*popup_create')
+            let winid = popup_create(lines, #{
+                \ line: &lines - len(lines) - 3,
+                \ col: &columns - width - 4,
+                \ minwidth: width + 2,
+                \ maxwidth: width + 2,
+                \ padding: [0, 1, 0, 1],
+                \ title: title,
+                \ })
+            redraw!
+        else
+            redraw
+            echo title . "\n" . join(lines, "\n")
+            let winid = -1
+        endif
+
+        "let char = nr2char(getchar())
+        let char = getcharstr()
+
+        if exists('*popup_close') && winid != -1
+            call popup_close(winid)
+        endif
+        redraw
+
+        if char == "\<Esc>"
+            return
+        endif
+
+        if has_key(menu, char)
+            let item = menu[char]
+            if type(item) == v:t_dict
+                let prefix .= char
+                let menu = item
+            else
+                call s:RunMenuItem(item)
+                return
+            endif
+        elseif has_key(menu, '_')
+            call s:RunMenuItem(menu['_'])
+            return
+        else
+            return
+        endif
+    endwhile
+endfunction
+
+nnoremap <silent> <Leader> :call <SID>LeaderPrompt()<CR>
+" xnoremap <silent> <Leader> :<C-u>call <SID>LeaderPrompt()<CR>
+

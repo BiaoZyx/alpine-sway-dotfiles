@@ -25,6 +25,7 @@ settings:
     https://lichess.org: access-paste
   content.mouse_lock:
     http://copy.sh: true
+    https://1.mcjslink.144449.xyz: true
   content.proxy:
     global: system
   content.user_stylesheets:
