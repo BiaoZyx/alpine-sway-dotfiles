@@ -13,8 +13,8 @@
 " 备注: 普通vim可能剪切板支持不好，建议安装gvim以使用vim
 " ============================================================
 " 记得更改这个，将用于文件头生成
-let author = "Change it in ~/.vimrc"
-let email  = "Change it in ~/.vimrc"
+let author = "BiaoZyx"
+let email  = "BiaoZyx@outlook.com"
 
 " ============================================================
 " 插件设置 (根据需求)

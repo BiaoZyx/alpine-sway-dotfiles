@@ -6,6 +6,8 @@
 
 config_version: 2
 settings:
+  colors.webpage.darkmode.enabled:
+    global: true
   content.blocking.enabled:
     https://signup.simcc.net.cn/: false
   content.headers.do_not_track:
@@ -26,6 +28,8 @@ settings:
   content.mouse_lock:
     http://copy.sh: true
     https://1.mcjslink.144449.xyz: true
+  content.notifications.enabled:
+    https://lichess.org: true
   content.proxy:
     global: system
   content.user_stylesheets:
