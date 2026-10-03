@@ -65,7 +65,7 @@
     "custom/layout": {
         "exec": "~/.config/waybar/scripts/layout_indicator.sh",
         "return-type": "json",
-        "interval": 1,
+        "signal": 8,
         "format": "{}",
         "tooltip": false
     },
@@ -73,8 +73,7 @@
     "custom/privacy": {
         "exec": "~/.config/waybar/scripts/privacy_indicator.sh",
         "return-type": "json",
-        "signal": 8,
-        //"interval": 3,
+        "interval": 3,
         "format": "{}",
         "tooltip": false
     },

@@ -20,6 +20,9 @@ pipewire-pulse &
 wireplumber &
 wayland-pipewire-idle-inhibit &
 
+# 脚本 (Waybar 工作区状态)
+exec ~/.config/waybar/scripts/layout_watcher.sh &
+
 # 输入法
 fcitx5 -d &
 
