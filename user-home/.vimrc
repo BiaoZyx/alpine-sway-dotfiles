@@ -2,7 +2,7 @@
 " Vimore
 " 作者: BiaoZyx
 " 邮箱: BiaoZyx@outlook.com
-" 版本: 3.18
+" 版本: 3.19.4
 " ============================================================
 "  _   ___
 " | | / (_)_ _  ___  _______
@@ -13,8 +13,8 @@
 " 备注: 普通vim可能剪切板支持不好，建议安装gvim以使用vim
 " ============================================================
 " 记得更改这个，将用于文件头生成
-let author = "BiaoZyx"
-let email  = "BiaoZyx@outlook.com"
+let author = "Change it in ~/.vimrc"
+let email  = "Change it in ~/.vimrc"
 
 " ============================================================
 " 插件设置 (根据需求)
@@ -83,7 +83,8 @@ if has('gui_running')
     " ---- GUI 颜色 ----
     highlight StatusLine   guifg=#ffffff guibg=#585858 gui=bold
     highlight StatusLineNC guifg=#aaaaaa guibg=#303030
-    highlight StatusLineTerm guifg=#ffffff guibg=#303030 gui=bold
+    highlight StatusLineTerm   guifg=#ffffff guibg=#585858 gui=bold
+    highlight StatusLineTermNC guifg=#aaaaaa guibg=#303030
     highlight User1        guifg=#ffd700 guibg=#585858 gui=bold
     highlight User2        guifg=#87d787 guibg=#585858 gui=bold
     highlight User3        guifg=#5fd7ff guibg=#585858 gui=bold
@@ -103,7 +104,8 @@ else
     if &t_Co >= 256
         highlight StatusLine   ctermfg=white ctermbg=238 cterm=bold
         highlight StatusLineNC ctermfg=gray  ctermbg=236
-        highlight StatusLineTerm ctermfg=white ctermbg=236 cterm=bold
+        highlight StatusLineTerm   ctermfg=white ctermbg=238 cterm=bold
+        highlight StatusLineTermNC ctermfg=gray  ctermbg=236
         highlight User1        ctermfg=220   ctermbg=238 cterm=bold
         highlight User2        ctermfg=114   ctermbg=238 cterm=bold
         highlight User3        ctermfg=81    ctermbg=238 cterm=bold
@@ -122,6 +124,8 @@ else
         " ---- 低色彩终端（8/16 色） ----
         highlight StatusLine   ctermfg=white ctermbg=darkblue cterm=bold
         highlight StatusLineNC ctermfg=gray  ctermbg=darkgray
+        highlight StatusLineTerm   ctermfg=white ctermbg=darkblue cterm=bold
+        highlight StatusLineTermNC ctermfg=gray  ctermbg=darkgray
         highlight User1        ctermfg=yellow ctermbg=darkblue cterm=bold
         highlight User2        ctermfg=green  ctermbg=darkblue cterm=bold
         highlight User3        ctermfg=cyan   ctermbg=darkblue cterm=bold
@@ -290,6 +294,7 @@ endfunction
 " 补全左括号光标后无字符或紧挨右括号时智能处理）
 inoremap <silent> ( <C-r>=SmartPair('(', ')')<CR>
 inoremap <silent> [ <C-r>=SmartPair('[', ']')<CR>
+inoremap <silent> { <C-r>=SmartPair('{', '}')<CR>
 
 " 特殊映射
 function! SmartCondition(char)
@@ -517,18 +522,18 @@ function! GetCommentEndStr()
 endfunction
 
 function! ToggleComment()
-
     let line = getline('.')
     let comment = GetCommentStr()
     let comment_end = GetCommentEndStr()
+    let comment_symbol = substitute(comment, '\s\+$', '', '')
     let trimmed = substitute(line, '^\s*', '', '')
 
-    if trimmed =~ '^' . escape(comment, '.*^$[]')
+    if trimmed =~ '^' . escape(comment_symbol, '.*^$[]')
         " 取消注释
         if comment_end != ''
-            let line = substitute(line, '\(\s*\)' . escape(comment, '.*^$[]') . '\(.*\)' . escape(comment_end, '.*^$[]'), '\1\2', '')
+            let line = substitute(line, '\(\s*\)' . escape(comment_symbol, '.*^$[]') . '\s*\(.*\)' . escape(comment_end, '.*^$[]'), '\1\2', '')
         else
-            let line = substitute(line, '\(\s*\)' . escape(comment, '.*^$[]'), '\1', '')
+            let line = substitute(line, '\(\s*\)' . escape(comment_symbol, '.*^$[]') . '\s*', '\1', '')
         endif
         call setline('.', line)
     else
@@ -545,25 +550,64 @@ endfunction
 function! ToggleCommentVisual()
     let comment = GetCommentStr()
     let comment_end = GetCommentEndStr()
-    let safe_comment = escape(comment, '"!')
-    let safe_comment_end = escape(comment_end, '"!')
-    let first_line = getline("'<")
-    let trimmed = substitute(first_line, '^\s*', '', '')
-    let is_commented = trimmed =~ '^' . escape(comment, '.*^$[]')
+    let comment_symbol = substitute(comment, '\s\+$', '', '')
+    let symbol_re = escape(comment_symbol, '.*^$[]')
+    let end_re = escape(comment_end, '.*^$[]')
 
-    if is_commented
-        if comment_end != ''
-            execute "silent '<,'>s!\\(\\s*\\)" . escape(comment, '.*^$!') . "\\(.*\\)" . escape(comment_end, '.*^$!') . "!\\1\\2!"
-        else
-            execute "silent '<,'>s!\\(\\s*\\)" . escape(comment, '.*^$!') . "!\\1!"
+    let start_line = line("'<")
+    let end_line = line("'>")
+    if start_line > end_line
+        let [start_line, end_line] = [end_line, start_line]
+    endif
+    if start_line < 1
+        return
+    endif
+
+    " 有一行没注释 -> 全部加注释；全都注释了 -> 全部去掉注释
+    let all_commented = 1
+    for l in range(start_line, end_line)
+        let trimmed = substitute(getline(l), '^\s*', '', '')
+        if trimmed == ''
+            continue    " 空行跳过
         endif
+        if trimmed !~ '^' . symbol_re
+            let all_commented = 0
+            break
+        endif
+    endfor
+
+    for l in range(start_line, end_line)
+        let line = getline(l)
+        let indent = matchstr(line, '^\s*')
+        let body = strpart(line, strlen(indent))
+
+        if all_commented
+            " 取消注释
+            if comment_end != ''
+                let body = substitute(body, '^' . symbol_re . '\s*\(.\{-}\)' . end_re . '$', '\1', '')
+            else
+                let body = substitute(body, '^' . symbol_re . '\s*', '', '')
+            endif
+        else
+            " 加注释，但空行跳过
+            if body == ''
+                continue
+            endif
+            let body = comment . body
+            if comment_end != ''
+                let body = body . comment_end
+            endif
+        endif
+
+        call setline(l, indent . body)
+    endfor
+endfunction
+
+function! ToggleCommentSmart()
+    if exists('g:vimore_from_visual') && g:vimore_from_visual
+        call ToggleCommentVisual()
     else
-        if comment_end != ''
-            execute "silent '<,'>s!^\\(\\s*\\)!\\1" . safe_comment . "!"
-            execute "silent '<,'>s!$!" . safe_comment_end . "!"
-        else
-            execute "silent '<,'>s!^\\(\\s*\\)!\\1" . safe_comment . "!"
-        endif
+        call ToggleComment()
     endif
 endfunction
 
@@ -1018,13 +1062,6 @@ function! s:SetTitle()
         call append(5, " * @description: ")
         call append(6, " ************************************************************************/")
         call append(7, "")
-        call append(8, "#include <stdio.h>")
-        call append(9, "#include <stdlib.h>")
-        call append(10, "")
-        call append(11, "int main(int argc, char *argv[]) {")
-        call append(12, "    return 0;")
-        call append(13, "}")
-        call append(14, "")
     elseif &filetype == 'cpp'
         call setline(1, "/*************************************************************************")
         call append(1, " * @file: ".expand("%"))
@@ -1034,17 +1071,6 @@ function! s:SetTitle()
         call append(5, " * @description: ")
         call append(6, " ************************************************************************/")
         call append(7, "")
-        call append(8, "#include <iostream>")
-        call append(9, "#include <vector>")
-        call append(10, "#include <string>")
-        call append(11, "#include <algorithm>")
-        call append(12, "")
-        call append(13, "using namespace std;")
-        call append(14, "")
-        call append(15, "int main(int argc, char *argv[]) {")
-        call append(16, "    return 0;")
-        call append(17, "}")
-        call append(18, "")
     elseif &filetype == 'java'
         call setline(1, "/*")
         call append(1, " * @file: ".expand("%"))
@@ -1200,10 +1226,10 @@ let g:leader_menu = {
             \ 'c':  {
             \ 'name': '维护',
             \ 'c': ['代码检查',       function('CheckCode')],
-            \ 'v': ['重新加载配置',   ':source $MYVIMRC<CR>'],
+            \ 'v': ['重新加载配置',   ':call timer_start(0, {-> execute("source $MYVIMRC")})<CR>'],
             \ 'e': ['编辑配置',       ':e $MYVIMRC<CR>'],
             \ },
-            \ '/':  ['注释/取消注释',     function('ToggleComment')],
+            \ '/':  ['注释/取消注释',     function('ToggleCommentSmart')],
             \ 'b':  {
             \ 'name': '括号',
             \ 'd': {
@@ -1271,15 +1297,6 @@ let g:leader_menu = {
             \ }
 
 " === 可视模式单独快捷键 ===
-xnoremap <Leader>y "+y
-xnoremap <Leader>p "+p
-xnoremap <Leader>P "+P
-xnoremap <silent> <Leader>/ :call ToggleCommentVisual()<CR>
-xnoremap <silent> <Leader>s :sort<CR>
-xnoremap <silent> <Leader>su :sort u<CR>
-xnoremap <silent> <Leader>sn :sort n<CR>
-xnoremap <C-x> "+x
-
 " 缩进
 xnoremap <silent> < <gv
 xnoremap <silent> > >gv
@@ -1358,9 +1375,13 @@ endfunction
 " == 主提示循环 ==
 function! s:LeaderPrompt(...)
     let silent_mode = a:0 > 0 ? a:1 : 0
+    " 是否来自可视模式：由映射显式传入。
+    " 因为映射是 ':' 开头的，执行到这里时可视模式早已退出，mode() 只会返回 'n'，
+    " 用 mode() 判断永远得到 0，所以不能靠 mode()。
+    let save_visual = a:0 > 1 ? a:2 : 0
 
-    let save_mode = mode()
-    let save_visual = (save_mode == 'v' || save_mode == 'V' || save_mode == "\<C-v>")
+    let g:vimore_from_visual = save_visual   " ← 存到全局，跨函数可读
+
     let save_start = getpos("'<")
     let save_end = getpos("'>")
     let save_cur = getpos('.')
@@ -1441,5 +1462,5 @@ function! s:LeaderPrompt(...)
 endfunction
 
 nnoremap <silent> <Leader> :call <SID>LeaderPrompt()<CR>
-xnoremap <silent> <Leader> :<C-u>call <SID>LeaderPrompt(1)<CR>
+xnoremap <silent> <Leader> :<C-u>call <SID>LeaderPrompt(1, 1)<CR>
 
