@@ -362,3 +362,32 @@ window#waybar.empty #window {
         background: rgba(255, 114, 143, 0.22);
     }
 }
+
+/* ========================================
+   Idle Inhibitor（咖啡因 / 演示模式）
+   ======================================== */
+#idle_inhibitor {
+    padding: 0px 4px;
+    margin: 4px 0px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    transition: all 0.2s ease;
+}
+
+#idle_inhibitor:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* 激活时 - 咖啡杯，柔和紫 */
+#idle_inhibitor.activated {
+    color: @mauve;
+    text-shadow: 0 0 6px rgba(188, 165, 242, 0.4);
+}
+
+/* 取消时 - 眼睛斜杠，暗色 */
+#idle_inhibitor.deactivated {
+    color: @overlay0;
+}
+
+/* 如果你希望取消时也有一点颜色提示，可以用下面这行替换上面那行 */
+/* #idle_inhibitor.deactivated { color: @sapphire; } */

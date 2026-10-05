@@ -77,7 +77,10 @@ alias grep='grep --color=auto'
 alias ip='ip --color=auto'
 alias fastfetch='fastfetch -l Alpine2'
 alias less='less -MNS --mouse --use-color'
-alias t='trans -e bing'
+alias t='trans -e bing -b'
+
+alias nmo='nmail -d ~/.config/nmail-outlook/'
+alias nmd='nmail -d ~/.config/nmail-disroot/'
 
 # ------------------------------------------------------------
 # Completion
@@ -126,42 +129,10 @@ if [ -f /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substrin
 fi
 
 # ------------------------------------------------------------
-# Powerlevel10k Theme (Alpine apk 路径)
+# Powerlevel10k Theme
 # ------------------------------------------------------------
 if [ -f /usr/share/zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme ]; then
     source /usr/share/zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
     [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 fi
 
-# ------------------------------------------------------------
-# 环境设置
-# ------------------------------------------------------------
-export $(dbus-launch --exit-with-session)
-export PATH=/var/lib/flatpak/exports/share:/home/xue/.local/share/flatpak/exports/share:$PATH
-
-# Language
-if [ $TERM = linux ]; then
-	export LANG=en_US.UTF-8
-	export LC_ALL=en_US.UTF-8
-	export LANGUAGE=en_US:en
-else
-	export LANG=zh_CN.UTF-8
-	export LC_ALL=zh_CN.UTF-8
-	export LANGUAGE=zh_CN:zh
-fi
-
-# Input Method
-#export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-export XMODIFIERS=@im=fcitx
-export SDL_IM_MODULE=fcitx
-
-# Qt Settings
-export QT_QPA_PLATFORMTHEME=qt6ct
-
-#export QT_AUTO_SCREEN_SCALE_FACTOR=0
-#export QT_SCREEN_SCALE_FACTORS=1
-#export QT_SCALE_FACTOR=1
-export QT_AUTO_SCREEN_SCALE_FACTOR=0
-export QT_SCALE_FACTOR=1
-export QT_FONT_DPI=90

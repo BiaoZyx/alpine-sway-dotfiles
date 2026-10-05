@@ -4,7 +4,7 @@
     "height": 20,
     "spacing": 8,
 
-    "modules-left": ["sway/workspaces", "sway/mode", "custom/layout"],
+    "modules-left": ["sway/workspaces", "custom/layout", "sway/mode", "idle_inhibitor"],
     "modules-center": ["custom/privacy", "sway/window"],
     "modules-right": ["network", "pulseaudio", "cpu", "memory", "clock", "battery", /*"custom/clipman", "custom/notif",*/ "tray", "custom/power"],
 
@@ -18,6 +18,15 @@
 
     "sway/window": {
         "max-length": 40
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        },
+        "tooltip-format": "Idle inhibitor: {status}"
     },
 
     "battery": {
