@@ -17,14 +17,6 @@ let author = "Change it in ~/.vimrc"
 let email  = "Change it in ~/.vimrc"
 
 " ============================================================
-" 插件设置 (根据需求)
-" ============================================================
-" === ALE(Example) ===
-" let g:ale_linters = {
-" \ 'sh': ['language_server'],
-" \ }
-
-" ============================================================
 " 1. 基础设置
 " ============================================================
 set nocompatible              " 不使用 vi 兼容模式
@@ -74,6 +66,9 @@ autocmd InsertLeave * set relativenumber
 " 限制语法同步范围 (避免 Vim 每次重绘都从头解析整个文件)
 syntax sync minlines=200
 syntax sync maxlines=500
+
+" 插入模式补全弹出菜单垂直长度
+set pumheight=15
 
 " ============================================================
 " 3. 状态栏
@@ -621,6 +616,12 @@ tnoremap <Esc><Esc> <C-\><C-n>
 " 强制透传 Ctrl-C
 tnoremap <C-c> <Cmd>call term_sendkeys(bufnr('%'), nr2char(3))<CR>
 
+" 窗口切换
+tnoremap <C-S-h> <C-w>h
+tnoremap <C-S-j> <C-w>j
+tnoremap <C-S-k> <C-w>k
+tnoremap <C-S-l> <C-w>l
+
 " 终端复制（退出终端模式后复制到系统剪切板）
 tnoremap <C-S-c> <C-\><C-n>"+yy
 tnoremap <C-S-v> <C-\><C-n>"+pi
@@ -843,7 +844,6 @@ nnoremap <C-l> <C-w>l
 nnoremap <silent> <A-Left> :tabp<CR>
 nnoremap <silent> <A-Right> :tabn<CR>
 nnoremap <silent> <C-t> :tabnew<CR>
-nnoremap <silent> <C-w> :tabclose<CR>
 
 " 全选复制
 vnoremap <C-x> "+x
