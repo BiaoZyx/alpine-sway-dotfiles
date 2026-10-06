@@ -9,6 +9,7 @@ This is a minimal, tweakable Sway setup for Alpine Linux. It favors clarity over
 It's written for Alpine Linux, but it's portable — fork it and adapt it to any other distro.
 
 > There's intentionally no `setup.sh`. Automating the copy would risk clobbering configs you already have. Instead, back up your existing configs and copy the ones here over yourself.
+> There're some configs written in Chinese like qutebrowser. Maybe you have to rewrite them...
 
 ### Screenshots
 
@@ -19,8 +20,6 @@ Normal mode with a foot terminal:
 Privacy indicator (mic/camera in use):
 
 ![Privacy Indicator](./screenshot2.png)
-
-> Actually, the new version has an "H/V/S/T/F"(Layout Indicator) with different colours on the Waybar. But I'm lazy to shot the screen...
 
 ## Requirements
 ### Core packages
@@ -75,6 +74,10 @@ Privacy indicator (mic/camera in use):
 3. `font-noto-emoji`
 4. `font-noto-music`
 5. `font-jetbrains-mono-nerd`
+
+#### Recommended
+1. `eza`
+2. `fortune`
 
 ## Installation
 First, I recommend running `su -c 'setup-desktop sway'`, which will install some packages like `sway` and `swaybg` automatically.

@@ -25,6 +25,7 @@ settings:
     https://help.mirror.nju.edu.cn: access-paste
     https://help.mirrors.cernet.edu.cn: access-paste
     https://lichess.org: access-paste
+    https://monochrome.st: access-paste
   content.mouse_lock:
     http://copy.sh: true
     https://1.mcjslink.144449.xyz: true

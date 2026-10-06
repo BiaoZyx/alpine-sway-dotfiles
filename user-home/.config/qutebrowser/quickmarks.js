@@ -1,1 +1,1 @@
-var QUICKMARKS=[{"name": "DeepSeek", "url": "https://chat.deepseek.com/"}, {"name": "Lichess", "url": "https://lichess.org/"}, {"name": "BiliBili", "url": "https://www.bilibili.com/"}, {"name": "GitHub", "url": "https://github.com/"}];
+var QUICKMARKS=[{"name": "DeepSeek", "url": "https://chat.deepseek.com/"}, {"name": "Lichess", "url": "https://lichess.org/"}, {"name": "BiliBili", "url": "https://www.bilibili.com/"}, {"name": "GitHub", "url": "https://github.com/"}, {"name": "FREEMP3", "url": "https://b2.freemp3cloud.com/"}];
