@@ -26,10 +26,18 @@ bindsym $mod+d exec $menu
 # Custom App Keybindings
 # ------------------------------
 # 截图快捷键
-bindsym Print exec grimshot savecopy anything ~/Pictures/Screenshots/$(date +%d-%m-%Y-%H-%M-%S).png --notify
-bindsym Shift+Print exec grimshot savecopy screen ~/Pictures/Screenshots/$(date +%d-%m-%Y-%H-%M-%S).png --notify
-bindsym Control+Print exec grimshot savecopy active ~/Pictures/Screenshots/$(date +%d-%m-%Y-%H-%M-%S).png --notify
-bindsym Control+Shift+Print exec grimshot savecopy area ~/Pictures/Screenshots/$(date +%d-%m-%Y-%H-%M-%S).png --notify
+bindsym Print exec grimshot savecopy anything ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png --notify
+bindsym Shift+Print exec grimshot savecopy screen ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png --notify
+bindsym Control+Print exec grimshot savecopy active ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png --notify
+bindsym Control+Shift+Print exec grimshot savecopy area ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png --notify
+
+# 录屏快捷键
+    # 开始录制全屏
+bindsym $mod+Shift+r exec mkdir -p ~/Videos/Screenrecord && notify-send "开始录屏" "wf-recorder" && wf-recorder -f ~/Videos/Screenrecord/recording_$(date +"%Y-%m-%d_%H-%M-%S").mp4
+    # 开始录制选定区域
+bindsym $mod+Shift+Ctrl+r exec mkdir -p ~/Videos/Screenrecord && notify-send "开始录屏" "wf-recorder" && wf-recorder -g "$(slurp)" -f ~/Videos/Screenrecord/recording_$(date +"%Y-%m-%d_%H-%M-%S").mp4
+    # 停止录制
+bindsym $mod+Shift+BackSpace exec notify-send "录屏结束" "已保存到 ~/Videos/Screenrecord" notify-send killall -s SIGINT wf-recorder
 
 # 剪贴板菜单
 #bindsym $mod+c exec cliphist list | rofi -dmenu -display-columns 2 -p "Clipboard" -font 'JetBrainsMono Nerd Font Mono 12' | cliphist decode | wl-copy
