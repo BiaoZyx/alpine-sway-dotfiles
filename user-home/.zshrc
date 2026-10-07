@@ -142,16 +142,6 @@ if [ -f /usr/share/zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme ]; then
 fi
 
 # ------------------------------------------------------------
-# Welcome
-# ------------------------------------------------------------
-if [[ $- == *i* ]]; then
-    if command -v fortune &>/dev/null; then
-        fortune
-        echo
-    fi
-fi
-
-# ------------------------------------------------------------
 # Environment Settings
 # ------------------------------------------------------------
 export PATH=/var/lib/flatpak/exports/share:/home/xue/.local/share/flatpak/exports/share:$PATH
