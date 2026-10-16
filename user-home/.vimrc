@@ -2,7 +2,7 @@
 " Vimore
 " 作者: BiaoZyx
 " 邮箱: BiaoZyx@outlook.com
-" 版本: 3.19.5
+" 版本: 3.22
 " ============================================================
 "  _   ___
 " | | / (_)_ _  ___  _______
@@ -226,6 +226,12 @@ set nowrap
 set nolinebreak
 set showbreak=↪
 
+" Markdown, 纯文本等不显示自动换行符
+augroup SoftWrapForText
+  autocmd!
+  autocmd FileType markdown,text,org,gitcommit,rst,asciidoc,tex setlocal wrap showbreak=NONE
+augroup END
+
 " 各文件类型自定义缩进
 autocmd FileType python,sh setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 autocmd FileType go setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab
@@ -253,8 +259,8 @@ set gdefault                  " 默认全局替换
 set backspace=indent,eol,start
 set whichwrap+=<,>,h,l,b,s
 set scrolloff=5
-set sidescrolloff=5
-set sidescroll=5
+set sidescrolloff=8
+set sidescroll=10
 set virtualedit=block
 set selection=inclusive " 光标下字符也选中
 "set selectmode=mouse,key
@@ -262,6 +268,10 @@ set mouse=a
 set mousemodel=popup
 set ttymouse=sgr
 set keymodel=startsel,stopsel
+
+" 使用 j, k 默认切换屏幕行 (可视模式不生效)
+nnoremap <expr> j v:count ? 'j' : 'gj'
+nnoremap <expr> k v:count ? 'k' : 'gk'
 
 " 插入模式下设置为闪烁竖线 (solid vertical bar)
 let &t_SI = "\<Esc>[5 q"
@@ -747,8 +757,43 @@ set wildignore+=*.o,*.a,*.obj,*.class
 
 inoremap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <silent><expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-inoremap <silent><expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
-"inoremap <silent><expr> <CR> pumvisible() ? "\<C-y>" : (SmartEnterCondition() ? "\<C-o>:call SmartEnter()\<CR>" : "\<CR>")
+
+" <CR> 智能拆分
+inoremap <silent><expr> <CR> pumvisible() ? "\<C-y>" : SmartEnter()
+
+function! SmartEnter()
+    let line = getline('.')
+    let col = col('.') - 1
+
+    if col > 0 && col < len(line)
+        let before = line[col - 1]
+        let after = line[col]
+        let pairs = {'{': '}', '(': ')', '[': ']'}
+        if has_key(pairs, before) && after == pairs[before]
+            return "\<C-o>:call SplitPair()\<CR>"
+        endif
+    endif
+
+    return "\<CR>"
+endfunction
+
+function! SplitPair()
+    let lnum = line('.')
+    let line = getline(lnum)
+    let col = col('.') - 1
+    let indent = matchstr(line, '^\s*')
+    let inner = indent . repeat(' ', &shiftwidth)
+
+    let line1 = line[:col-1]
+    let line2 = inner
+    let line3 = indent . line[col:]
+
+    call setline(lnum, line1)
+    call append(lnum, line2)
+    call append(lnum + 1, line3)
+
+    call cursor(lnum + 1, len(line2) + 1)
+endfunction
 
 filetype plugin on
 

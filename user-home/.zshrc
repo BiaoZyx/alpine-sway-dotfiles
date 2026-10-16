@@ -80,9 +80,10 @@ alias less='less -MNS --mouse --use-color'
 alias t='trans -e bing -b'
 
 alias g=git
-alias gst='g status'
-alias gp='g pull'
-alias gpu='g push'
+alias gst='git status'
+alias gp='git pull'
+alias gpu='git push'
+alias gc='git commit'
 
 alias nmo='nmail -d ~/.config/nmail-outlook/'
 alias nmd='nmail -d ~/.config/nmail-disroot/'
