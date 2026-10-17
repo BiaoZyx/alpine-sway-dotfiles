@@ -171,13 +171,16 @@ def _apply_m3(scheme):
         except Exception:
             pass
     try:
-        # 让网页 prefers-color-scheme 与浏览器 chrome 保持一致
+        # 网页 prefers-color-scheme 与浏览器 chrome 保持一致
         config.set('colors.webpage.preferred_color_scheme', scheme)
-        # 深色时强制网页暗色滤镜，浅色时关闭
+        # 深色时启用强制网页暗色滤镜，浅色时关闭
         config.set('colors.webpage.darkmode.enabled', scheme == 'dark')
-        # 提示框边框（需要 "粗细 样式 颜色" 形式）
+        # smart：页面本身为深色时跳过强制滤镜
+        config.set('colors.webpage.darkmode.policy.page', 'smart')
+        config.set('colors.webpage.darkmode.policy.images', 'never')
+        # 提示框边框
         config.set('colors.prompts.border', '1px solid ' + p['outline_variant'])
-        # f 模式 hint 标签边框（默认黄色 #E3BE23）
+        # f 模式 hint 标签边框
         config.set('hints.border', '1px solid ' + p['on_primary'])
     except Exception:
         pass
@@ -208,7 +211,7 @@ c.colors.webpage.darkmode.policy.page = 'smart'
 c.scrolling.smooth = True
 
 # 下载
-c.downloads.location.directory = "~/Downloads"    # 下载目录（记得改）
+c.downloads.location.directory = "~/Downloads"    # 下载目录
 c.downloads.position = "bottom"    # 下载栏位置（底部）
 
 # 新建标签页在当前标签页右边
@@ -229,7 +232,7 @@ c.url.searchengines = {
     "DEFAULT": "https://www.bing.com/search?q={}"
 }
 
-# 编辑器设置 - 使用 foot 启动 vim (记得修改)
+# 编辑器设置：使用 foot 启动 vim
 c.editor.command = [
     "/usr/bin/foot",
     "-e",
@@ -257,25 +260,28 @@ config.bind('gp', 'open -p')               # 隐私模式
 
 config.bind(',s', 'spawn --userscript save_links')  # 在主页把浏览器改动的常用链接写入 links.txt
 
+# 临时全局切换强制深色模式
+config.bind('cd', 'config-cycle colors.webpage.darkmode.enabled true false')
+
 # ========== 界面字体配置 ==========
-# 1. 地址栏（输入命令/网址的地方）
+# 地址栏（输入命令/网址的地方）
 c.fonts.prompts = '11pt "JetBrainsMono Nerd Font Mono"'
 
-# 2. 状态栏（底部显示信息的地方）
+# 状态栏（底部显示信息的地方）
 c.fonts.statusbar = '11pt "JetBrainsMono Nerd Font Mono"'
 
-# 3. 标签页标题
+# 标签页标题
 c.fonts.tabs.selected = 'bold 11pt "Noto Sans CJK SC"'
 c.fonts.tabs.unselected = '10pt "Noto Sans CJK SC"'
 
-# 4. 消息提示
+# 消息提示
 c.fonts.messages.info = '10pt "JetBrainsMono Nerd Font Mono"'
 c.fonts.messages.warning = '10pt "JetBrainsMono Nerd Font Mono"'
 c.fonts.messages.error = '10pt "JetBrainsMono Nerd Font Mono"'
 c.colors.messages.info.fg = '#ffffff'   # `,s` 保存提示白字
 c.colors.messages.info.bg = '#000000'   # 黑底，避免看起来像红色报错
 
-# 5. 网页内容（不变）
+# 网页内容
 c.fonts.web.family.standard = "Noto Sans CJK SC"
 c.fonts.web.family.sans_serif = "Noto Sans CJK SC"
 c.fonts.web.family.serif = "Noto Serif CJK SC"
