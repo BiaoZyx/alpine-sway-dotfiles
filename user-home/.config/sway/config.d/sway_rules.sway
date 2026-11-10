@@ -20,7 +20,7 @@ gaps outer 3
 # Wallpaper Setting
 # ------------------------------
 #output * bg /home/xue/Pictures/Wallpapers/dolomite-mountains-3840x2160-11530.jpg fill
-output * bg /home/xue/Pictures/Wallpapers/Gargantua.png fill
+output * bg ~/Pictures/Wallpapers/Zivon_Wallpaper.svg fill
 
 # ------------------------------
 # Cursor Setting

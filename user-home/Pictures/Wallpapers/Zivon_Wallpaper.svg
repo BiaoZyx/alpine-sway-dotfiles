@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%">
+  <defs>
+    <!-- 背景渐变 -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070514" />
+      <stop offset="100%" stop-color="#120C2B" />
+    </linearGradient>
+
+    <!-- 形状 1：深蓝紫 -->
+    <linearGradient id="shape1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1145" />
+      <stop offset="100%" stop-color="#0D0822" />
+    </linearGradient>
+
+    <!-- 形状 2：靛蓝 -->
+    <linearGradient id="shape2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2B1E6E" />
+      <stop offset="100%" stop-color="#120C2B" />
+    </linearGradient>
+
+    <!-- 形状 3：亮靛蓝 -->
+    <linearGradient id="shape3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A3B9C" />
+      <stop offset="100%" stop-color="#2B1E6E" />
+    </linearGradient>
+
+    <!-- 形状 4：薰衣草紫 -->
+    <linearGradient id="shape4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7A6BCE" />
+      <stop offset="100%" stop-color="#4A3B9C" />
+    </linearGradient>
+  </defs>
+
+  <!-- 基础背景 -->
+  <rect width="1920" height="1080" fill="url(#bgGrad)" />
+
+  <!-- 右上角巨型圆形 -->
+  <circle cx="1700" cy="150" r="650" fill="url(#shape2)" opacity="0.6" />
+
+  <!-- 左下角大型胶囊形状 -->
+  <rect x="-300" y="600" width="800" height="800" rx="400" fill="url(#shape1)" opacity="0.8" />
+
+  <!-- 左上方中型胶囊形状 -->
+  <rect x="100" y="-100" width="250" height="700" rx="125" fill="#2B1E6E" opacity="0.5" />
+
+  <!-- 中上方圆形点缀 -->
+  <circle cx="800" cy="300" r="150" fill="#4A3B9C" opacity="0.4" />
+
+  <!-- 中右侧大型圆形 -->
+  <circle cx="1300" cy="550" r="350" fill="url(#shape3)" opacity="0.7" />
+
+  <!-- 右下角强调圆形 -->
+  <circle cx="1650" cy="850" r="300" fill="url(#shape4)" opacity="0.9" />
+</svg>
