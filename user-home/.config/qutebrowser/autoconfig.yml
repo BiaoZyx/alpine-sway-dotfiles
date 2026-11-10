@@ -23,11 +23,13 @@ settings:
     https://codeberg.org: access-paste
     https://danklinux.com: access-paste
     https://gh-proxy.com: access-paste
+    https://giscus.app: access-paste
     https://github.com: access-paste
     https://help.mirror.nju.edu.cn: access-paste
     https://help.mirrors.cernet.edu.cn: access-paste
     https://lichess.org: access-paste
     https://monochrome.st: access-paste
+    https://symboldb.org: access-paste
   content.media.audio_capture:
     https://guitar-tuner.org: true
   content.mouse_lock:
@@ -41,11 +43,11 @@ settings:
     global: []
   editor.command:
     global:
-    - micro
-    - -f
+    - /usr/bin/foot
+    - -e
+    - /usr/bin/nvim
+    - +{line}
     - '{file}'
-    - -c
-    - normal {line}G{column0}l
   fonts.default_family:
     global: Noto Sans CJK SC
   fonts.messages.error:

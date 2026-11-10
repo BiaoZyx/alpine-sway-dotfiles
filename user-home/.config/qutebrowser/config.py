@@ -234,9 +234,7 @@ c.url.searchengines = {
 
 # 编辑器设置：使用 foot 启动 vim
 c.editor.command = [
-    "/usr/bin/foot",
-    "-e",
-    "/usr/bin/vim",
+    "/usr/bin/neovide",
     "+{line}",
     "{file}"
 ]
