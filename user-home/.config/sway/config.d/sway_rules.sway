@@ -1,14 +1,22 @@
 # ------------------------------
 # Border Settings
 # ------------------------------
-# 必须保证 default_border 不为 none，否则圆角显示不出
+# 必须保证 default_border 不为 none，否则边框无法显示
 default_border pixel 2
 default_floating_border pixel 2
 
+# 边框颜色 (原版 Sway 只支持 5 个颜色值)
+# 格式: 边框 背景 文字 指示器 子边框(child_border)
+# 聚焦：亮紫色边框
+# 未聚焦：极暗紫色边框 (#1A1145 介于黑与深靛紫之间)
 client.focused          #141218 #8a72b8 #f4efff #8a72b8
 client.unfocused        #141218 #2a2633 #9d99a5 #2a2633
 client.focused_inactive #141218 #2a2633 #9d99a5 #2a2633
 client.urgent           #141218 #ff728f #141218 #ff728f
+
+# 单窗口/全屏时是否隐藏边框
+# 设为 none 防止全屏或单窗口时边框计算出现白边异常
+hide_edge_borders none
 
 # ------------------------------
 # Gap Settings
@@ -19,7 +27,6 @@ gaps outer 3
 # ------------------------------
 # Wallpaper Setting
 # ------------------------------
-#output * bg /home/xue/Pictures/Wallpapers/dolomite-mountains-3840x2160-11530.jpg fill
 output * bg ~/Pictures/Wallpapers/Zivon_Wallpaper.svg fill
 
 # ------------------------------

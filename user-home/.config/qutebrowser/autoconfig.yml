@@ -30,6 +30,7 @@ settings:
     https://lichess.org: access-paste
     https://monochrome.st: access-paste
     https://symboldb.org: access-paste
+    https://worldvectorlogo.com: access-paste
   content.media.audio_capture:
     https://guitar-tuner.org: true
   content.mouse_lock:

@@ -1,57 +1,54 @@
 /* ========================================
-   Material / Dark 配色）
+   Material You 3 × Sway - 紫黑方正紧凑
    ======================================== */
-@define-color text #f4efff;
-@define-color subtext1 #e6e0e9;
-@define-color subtext0 #c8c3cf;
-@define-color overlay2 #b3adc0;
-@define-color overlay1 #9d99a5;
-@define-color overlay0 #7f798a;
-@define-color surface2 #4f378b;
-@define-color surface1 #3d2d6e;
-@define-color surface0 #2a2633;
-@define-color base #141218;
-@define-color mantle #0e0c12;
-@define-color crust #08070a;
+@define-color text #E0D8F5;
+@define-color subtext1 #C4BAE8;
+@define-color subtext0 #9D8FD6;
+@define-color overlay2 #7A6BCE;
+@define-color overlay1 #5C4FA0;
+@define-color overlay0 #3D2D6E;
+@define-color surface3 #242030;
+@define-color surface2 #1A1726;
+@define-color surface1 #14111E;
+@define-color surface0 #0E0C16;
+@define-color base #08060E;
+@define-color mantle #05040A;
+@define-color crust #03020A;
 
-/* --- 柔和紫 --- */
-@define-color mauve #bca5f2;      /* 主要紫色 - 柔和 */
-@define-color blue #bca5f2;       /* 统一用同一紫色 */
-@define-color lavender #ded0ff;   /* 淡紫保留一点亮 */
-@define-color sapphire #94a5d0;   /* 蓝灰紫，不那么刺眼 */
+@define-color mauve #C4BAE8;
+@define-color blue #7A6BCE;
+@define-color lavender #D4C9FF;
+@define-color sapphire #8A7FC4;
 
-/* --- 其他颜色 --- */
-@define-color rosewater #f5e0dc;
-@define-color flamingo #f2cdcd;
-@define-color pink #f5c2e7;
 @define-color red #ff728f;
-@define-color maroon #eba0ac;
 @define-color peach #ffda72;
-@define-color yellow #ffe7a5;
 @define-color green #7fff9a;
+@define-color yellow #ffe7a5;
 @define-color teal #94e2d5;
 @define-color sky #89dceb;
+@define-color flamingo #f2cdcd;
 
 /* ========================================
-   整体栏样式 - 毛玻璃
+   整体栏：贴边、方角、2px 底边
    ======================================== */
 #waybar {
-    background: rgba(20, 18, 24, 0.65);
+    background: @base;
     color: @text;
     font-family: "JetBrainsMono Nerd Font Propo", "Noto Sans CJK SC", "Noto Color Emoji";
     font-size: 10px;
     font-weight: 500;
 
-    border-radius: 0 0 10px 10px;
-    margin: 3px 8px 0 8px;
-    padding: 0px 10px;
-    border-bottom: 1px solid rgba(188, 165, 242, 0.15);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-    min-height: 16px;
+    border: none;
+    border-bottom: 2px solid @overlay0;
+    border-radius: 0;
+    margin: 0;
+    padding: 0 0px;
+    box-shadow: none;
+    min-height: 28px;
 }
 
 /* ========================================
-   模块
+   所有模块：左右各 2px 间距
    ======================================== */
 #workspaces,
 #mode,
@@ -67,63 +64,55 @@
 #custom-power,
 #custom-layout,
 #custom-privacy {
-    padding: 0px 4px;
-    margin: 4px 0px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.04);
-    transition: all 0.2s ease;
-}
-
-#workspaces:hover,
-#mode:hover,
-#window:hover,
-#cpu:hover,
-#memory:hover,
-#network:hover,
-#pulseaudio:hover,
-#clock:hover,
-#custom-clipman:hover,
-#custom-notif:hover {
-    background: rgba(255, 255, 255, 0.08);
+    padding: 0px 2px;
+    margin: 0 2px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    transition: all 0.1s ease;
 }
 
 /* ========================================
-   工作区
+   工作区：方块按钮 + 底部下划线指示
    ======================================== */
 #workspaces {
-    padding: 0px 2px;
-    margin: 3px 1px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 6px;
+    padding: 0;
+    margin: 0 2px;
+    background: transparent;
+    border: none;
 }
 
 #workspaces button {
-    padding: 0px 4px;
-    margin: 1px 1px;
-    color: @subtext0;
+    padding: 0px 5px;
+    margin: 0 2px;
+    color: @overlay0;
     background: transparent;
-    border-radius: 5px;
+    border-radius: 0;
     border: none;
-    transition: all 0.2s ease;
+    box-shadow: inset 0 -2px 0 transparent;
+    transition: all 0.1s ease;
     font-weight: 500;
     font-size: 11px;
 }
 
 #workspaces button:hover {
     color: @text;
-    background: rgba(188, 165, 242, 0.15);
+    background: @surface1;
+    box-shadow: inset 0 -2px 0 @overlay1;
 }
 
 #workspaces button.focused {
-    color: @base;
-    background: @mauve;
-    font-weight: 600;
-    box-shadow: 0 0 12px rgba(188, 165, 242, 0.3);
+    color: @lavender;
+    background: transparent;
+    font-weight: 700;
+    box-shadow: inset 0 -2px 0 @mauve;
 }
 
 #workspaces button.urgent {
-    background: @red;
-    color: @base;
+    color: @red;
+    background: transparent;
+    box-shadow: inset 0 -2px 0 @red;
 }
 
 #workspaces button:not(.focused):not(.urgent) {
@@ -131,114 +120,95 @@
 }
 
 /* ========================================
-   窗口标题
+   窗口标题：左右 2px 竖线夹持，像标签页
    ======================================== */
 #window {
-    color: @sapphire;
+    color: @mauve;
     font-weight: 600;
-    background: rgba(116, 199, 236, 0.08);
-    border-radius: 6px;
+    background: transparent;
+    box-shadow: inset 0 -2px 0 @mauve;
     padding: 0px 10px;
     font-size: 12px;
-    margin: 3px 1px;
+    margin: 0 2px;
 }
 
-/* 当没有窗口时，中间模块完全隐形 */
 window#waybar.empty #window {
-    all: unset;  /* 重置所有样式，但可能影响其他属性，谨慎使用 */
+    all: unset;
     background: transparent;
     border: none;
     padding: 0;
     margin: 0;
     font-size: 0;
     min-height: 0;
+    box-shadow: none;
 }
 
 /* ========================================
-   系统监控
+   系统监控 / 网络 / 音量 / 时钟
    ======================================== */
-#cpu {
-    color: @green;
-}
+#cpu { color: @green; }
+#memory { color: @yellow; }
+#cpu.warning { color: @peach; }
+#cpu.critical { color: @red; }
 
-#memory {
-    color: @yellow;
-}
+#network { color: @sky; }
+#network.disconnected { color: @red; }
 
-#cpu.warning {
-    color: @peach;
-}
+#pulseaudio { color: @mauve; }
+#pulseaudio.muted { color: @overlay0; }
 
-#cpu.critical {
-    color: @red;
-}
-
-/* ========================================
-   网络
-   ======================================== */
-#network {
-    color: @sky;
-}
-
-#network.disconnected {
-    color: @red;
-}
-
-/* ========================================
-   音量
-   ======================================== */
-#pulseaudio {
-    color: @mauve;
-}
-
-#pulseaudio.muted {
-    color: @overlay0;
-}
-
-/* ========================================
-   时钟
-   ======================================== */
 #clock {
     color: @lavender;
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: inset 0 -2px 0 @mauve;
+}
+
+#cpu:hover,
+#memory:hover,
+#network:hover,
+#pulseaudio:hover,
+#clock:hover,
+#custom-clipman:hover,
+#custom-notif:hover {
+    background: @surface1;
+    box-shadow: inset 0 -2px 0 @overlay1;
 }
 
 /* ========================================
    自定义模块
    ======================================== */
-#custom-clipman {
-    color: @peach;
-    font-size: 11px;
-}
-
-#custom-notif {
-    color: @flamingo;
-    font-size: 11px;
-}
-
-#custom-notif.has-notif {
-    color: @red;
-}
+#custom-clipman { color: @peach; font-size: 11px; }
+#custom-notif { color: @flamingo; font-size: 11px; }
+#custom-notif.has-notif { color: @red; }
 
 #custom-power {
-    color: @red;
-    padding: 0px 4px;
-    margin: 3px 2px;
+    color: @overlay1;
+    padding: 0px 3px 2px 3px;
+    margin: 3px 1px 0 1px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: inset 0 -2px 0 transparent;
     font-weight: 700;
     font-size: 11px;
+    transition: all 0.1s ease;
 }
 
 #custom-power:hover {
-    color: @peach;
-    background: rgba(243, 139, 168, 0.15);
+    color: @red;
+    background: transparent;
+    border: none;
+    box-shadow: inset 0 -2px 0 @red;
 }
 
 /* ========================================
    托盘
    ======================================== */
 #tray {
-    padding: 0px 2px;
+    padding: 0px 4px;
+    margin: 0 2px;
     background: transparent;
+    border: none;
 }
 
 #tray > .passive {
@@ -247,148 +217,141 @@ window#waybar.empty #window {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background: rgba(243, 139, 168, 0.2);
-    border-radius: 3px;
+    background: @surface1;
+    border-bottom: 2px solid @red;
 }
 
 /* ========================================
-    模式指示 (resize)
+   模式指示
    ======================================== */
 #mode {
-    color: @peach;
-    background: rgba(255, 218, 114, 0.1);
+    color: @lavender;
+    background: transparent;
+    border: none;
+    box-shadow: inset 0 -2px 0 @overlay2;
+    padding: 0px 7px 2px 7px;
+    margin: 3px 1px 0 1px;
     font-weight: 700;
-    border-radius: 6px;
-    padding: 0px 6px;
-    text-shadow: 0 0 6px rgba(255, 218, 114, 0.3);
+    font-size: 11px;
+    letter-spacing: 0.5px;
 }
 
+#mode.resize {
+    color: @red;
+    border: none;
+    box-shadow: inset 0 -2px 0 @red;
+}
+
+#mode.passthrough {
+    color: @red;
+    border: none;
+    box-shadow: inset 0 -2px 0 @red;
+}
+
+/* ========================================
+   隐私 / 布局
+   ======================================== */
 #custom-privacy {
-    padding: 0 4px;
+    padding: 0 6px;
+    margin: 0 2px;
     font-size: 12px;
     background: transparent;
+    border: none;
 }
 
 #custom-layout {
-    padding: 0px 4px;
+    padding: 0px 6px;
+    margin: 0 2px;
     font-weight: bold;
     font-size: 11px;
-    border-radius: 6px;
-    transition: all 0.25s ease;
     background: transparent;
+    border: none;
+    box-shadow: inset 0 -2px 0 transparent;
 }
 
-#custom-layout.layout-H {
-    color: @teal;
-    text-shadow: 0 0 6px rgba(148, 226, 213, 0.4);
-}
-
-#custom-layout.layout-V {
-    color: @sky;
-    text-shadow: 0 0 6px rgba(137, 220, 235, 0.4);
-}
-
-#custom-layout.layout-T {
-    color: @peach;
-    text-shadow: 0 0 6px rgba(255, 218, 114, 0.4);
-}
-
-#custom-layout.layout-S {
-    color: @mauve;
-    text-shadow: 0 0 6px rgba(188, 165, 242, 0.4);
-}
-
-#custom-layout.layout-F {
-    color: @red;
-    text-shadow: 0 0 6px rgba(255, 114, 143, 0.4);
-}
-
-/* ========================================
-    小调整
-   ======================================== */
-#custom-clipman,
-#custom-notif {
-    font-size: 11px;
-    padding: 0px 4px;
-}
+#custom-layout.layout-H { color: @teal;    box-shadow: inset 0 -2px 0 @teal; }
+#custom-layout.layout-V { color: @sky;     box-shadow: inset 0 -2px 0 @sky; }
+#custom-layout.layout-T { color: @peach;   box-shadow: inset 0 -2px 0 @peach; }
+#custom-layout.layout-S { color: @mauve;   box-shadow: inset 0 -2px 0 @mauve; }
+#custom-layout.layout-F { color: @red;     box-shadow: inset 0 -2px 0 @red; }
 
 /* ========================================
    电池
    ======================================== */
 #battery {
     color: @green;
-    padding: 0px 4px;
-    margin: 4px 0px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.04);
-    transition: all 0.2s ease;
+    padding: 0px 6px;
+    margin: 0 2px;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: inset 0 -2px 0 transparent;
+    transition: all 0.1s ease;
 }
 
 #battery:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: @surface1;
+    box-shadow: inset 0 -2px 0 @overlay1;
 }
 
-/* 充电中 - 柔绿 */
 #battery.charging {
     color: @green;
-    text-shadow: 0 0 6px rgba(127, 255, 154, 0.4);
+    box-shadow: inset 0 -2px 0 @green;
 }
 
-/* 已插电但未充电（充满/Not charging） */
 #battery.plugged,
 #battery.full {
     color: @teal;
-    text-shadow: 0 0 6px rgba(148, 226, 213, 0.4);
+    box-shadow: inset 0 -2px 0 @teal;
 }
 
-/* 警告电量 */
 #battery.warning:not(.charging) {
     color: @peach;
-    text-shadow: 0 0 6px rgba(255, 218, 114, 0.4);
+    box-shadow: inset 0 -2px 0 @peach;
 }
 
-/* 严重低电量 - 红色 + 轻微闪烁提示 */
 #battery.critical:not(.charging) {
     color: @red;
-    text-shadow: 0 0 6px rgba(255, 114, 143, 0.5);
+    box-shadow: inset 0 -2px 0 @red;
     animation: battery-blink 1.2s ease-in-out infinite alternate;
 }
 
 @keyframes battery-blink {
-    from {
-        background: rgba(255, 114, 143, 0.08);
-    }
-    to {
-        background: rgba(255, 114, 143, 0.22);
-    }
+    from { background: transparent; }
+    to   { background: @surface2; }
 }
 
 /* ========================================
-   Idle Inhibitor（咖啡因 / 演示模式）
+   Idle Inhibitor
    ======================================== */
 #idle_inhibitor {
-    padding: 0px 4px;
-    margin: 4px 0px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.04);
-    transition: all 0.2s ease;
+    padding: 0px 8px;
+    margin: 0 2px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    box-shadow: inset 0 -2px 0 transparent;
+    transition: all 0.1s ease;
     font-size: 12px;
 }
 
 #idle_inhibitor:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: @surface1;
+    box-shadow: inset 0 -2px 0 @overlay1;
 }
 
-/* 激活时 - 咖啡杯，柔和紫 */
 #idle_inhibitor.activated {
     color: @mauve;
-    text-shadow: 0 0 6px rgba(188, 165, 242, 0.4);
+    background: transparent;
+    box-shadow: inset 0 -2px 0 @mauve;
 }
 
-/* 取消时 - 眼睛斜杠，暗色 */
+#idle_inhibitor.activated:hover {
+    background: @surface1;
+    box-shadow: inset 0 -2px 0 @lavender;
+}
+
 #idle_inhibitor.deactivated {
-    color: @overlay0;
+    color: @overlay1;
+    background: transparent;
+    box-shadow: inset 0 -2px 0 transparent;
 }
-
-/* 如果你希望取消时也有一点颜色提示，可以用下面这行替换上面那行 */
-/* #idle_inhibitor.deactivated { color: @sapphire; } */
