@@ -1,0 +1,388 @@
+/* ========================================
+   Material You 3 - 紫黑
+   ======================================== */
+@define-color text #E0D8F5;
+@define-color subtext1 #C4BAE8;
+@define-color subtext0 #9D8FD6;
+@define-color overlay2 #7A6BCE;
+@define-color overlay1 #5C4FA0;
+@define-color overlay0 #3D2D6E;
+@define-color surface3 #242030;
+@define-color surface2 #1A1726;
+@define-color surface1 #14111E;
+@define-color surface0 #0E0C16;
+@define-color base #08060E;
+@define-color mantle #05040A;
+@define-color crust #03020A;
+
+/* 强调紫 */
+@define-color mauve #C4BAE8;
+@define-color blue #7A6BCE;
+@define-color lavender #D4C9FF;
+@define-color sapphire #8A7FC4;
+
+/* 其他颜色 */
+@define-color rosewater #f5e0dc;
+@define-color flamingo #f2cdcd;
+@define-color pink #e8b8e8;
+@define-color red #ff728f;
+@define-color maroon #eba0ac;
+@define-color peach #ffda72;
+@define-color yellow #ffe7a5;
+@define-color green #7fff9a;
+@define-color teal #94e2d5;
+@define-color sky #89dceb;
+
+/* ========================================
+   整体栏：近黑底，极淡紫调
+   ======================================== */
+#waybar {
+    background: linear-gradient(180deg,
+        rgba(5, 4, 10, 0.88),
+        rgba(8, 6, 14, 0.82));
+    color: @text;
+    font-family: "JetBrainsMono Nerd Font Propo", "Noto Sans CJK SC", "Noto Color Emoji";
+    font-size: 10px;
+    font-weight: 500;
+
+    border-radius: 0 0 12px 12px;
+    margin: 3px 8px 0 8px;
+    padding: 0px 10px;
+    border-bottom: 1px solid rgba(196, 186, 232, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    min-height: 16px;
+}
+
+/* ========================================
+   模块：黑紫灰底，几乎没有紫
+   ======================================== */
+#workspaces,
+#mode,
+#window,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#clock,
+#tray,
+#custom-clipman,
+#custom-notif,
+#custom-power,
+#custom-layout,
+#custom-privacy {
+    padding: 0px 4px;
+    margin: 4px 0px;
+    border-radius: 8px;
+    background: rgba(196, 186, 232, 0.04);
+    border: 1px solid rgba(196, 186, 232, 0.02);
+    transition: all 0.2s ease;
+}
+
+#workspaces:hover,
+#mode:hover,
+#window:hover,
+#cpu:hover,
+#memory:hover,
+#network:hover,
+#pulseaudio:hover,
+#clock:hover,
+#custom-clipman:hover,
+#custom-notif:hover {
+    background: rgba(196, 186, 232, 0.09);
+    border-color: rgba(196, 186, 232, 0.06);
+}
+
+/* ========================================
+   工作区
+   ======================================== */
+#workspaces {
+    padding: 0px 2px;
+    margin: 3px 1px;
+    background: rgba(196, 186, 232, 0.03);
+    border-radius: 8px;
+}
+
+#workspaces button {
+    padding: 0px 4px;
+    margin: 1px 1px;
+    color: @subtext0;
+    background: transparent;
+    border-radius: 6px;
+    border: none;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+#workspaces button:hover {
+    color: @text;
+    background: rgba(196, 186, 232, 0.12);
+}
+
+#workspaces button.focused {
+    color: @base;
+    background: @mauve;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(196, 186, 232, 0.25);
+}
+
+#workspaces button.urgent {
+    background: @red;
+    color: @base;
+}
+
+#workspaces button:not(.focused):not(.urgent) {
+    color: @overlay1;
+}
+
+/* ========================================
+   窗口标题
+   ======================================== */
+#window {
+    color: @mauve;
+    font-weight: 600;
+    background: rgba(196, 186, 232, 0.06);
+    border-radius: 8px;
+    padding: 0px 10px;
+    font-size: 12px;
+    margin: 3px 1px;
+}
+
+window#waybar.empty #window {
+    all: unset;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0;
+    min-height: 0;
+}
+
+/* ========================================
+   系统监控
+   ======================================== */
+#cpu { color: @green; }
+#memory { color: @yellow; }
+#cpu.warning { color: @peach; }
+#cpu.critical { color: @red; }
+
+/* ========================================
+   网络 / 音量 / 时钟
+   ======================================== */
+#network { color: @sky; }
+#network.disconnected { color: @red; }
+
+#pulseaudio { color: @mauve; }
+#pulseaudio.muted { color: @overlay0; }
+
+#clock {
+    color: @lavender;
+    font-weight: 600;
+}
+
+/* ========================================
+   自定义模块
+   ======================================== */
+#custom-clipman {
+    color: @peach;
+    font-size: 11px;
+}
+
+#custom-notif {
+    color: @flamingo;
+    font-size: 11px;
+}
+
+#custom-notif.has-notif {
+    color: @red;
+}
+
+#custom-power {
+    color: @overlay2;
+    padding: 0px 6px;
+    margin: 3px 3px 3px 2px;
+    border-radius: 8px;
+    background: rgba(196, 186, 232, 0.05);
+    border: 1px solid rgba(196, 186, 232, 0.03);
+    font-weight: 700;
+    font-size: 11px;
+    transition: all 0.25s ease;
+}
+
+#custom-power:hover {
+    color: @red;
+    background: rgba(255, 114, 143, 0.12);
+    border-color: rgba(255, 114, 143, 0.35);
+    box-shadow: 0 0 14px 2px rgba(255, 114, 143, 0.18);
+}
+
+/* ========================================
+   托盘
+   ======================================== */
+#tray {
+    padding: 0px 2px;
+    background: transparent;
+    border: none;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background: rgba(255, 114, 143, 0.15);
+    border-radius: 4px;
+}
+
+/* ========================================
+   模式 / 布局
+   ======================================== */
+#mode {
+    color: @lavender;
+    background: @surface1;
+    border: 1px solid rgba(196, 186, 232, 0.20);
+    border-radius: 8px;
+    padding: 0px 8px;
+    margin: 3px 4px;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 6px rgba(196, 186, 232, 0.25);
+}
+
+#mode.resize {
+    color: @peach;
+    background: rgba(255, 218, 114, 0.08);
+    border-color: rgba(255, 218, 114, 0.30);
+}
+
+#mode.passthrough {
+    color: @red;
+    background: rgba(255, 114, 143, 0.08);
+    border-color: rgba(255, 114, 143, 0.30);
+}
+
+#custom-privacy {
+    padding: 0 4px;
+    font-size: 12px;
+    background: transparent;
+    border: none;
+}
+
+#custom-layout {
+    padding: 0px 4px;
+    font-weight: bold;
+    font-size: 11px;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+    background: transparent;
+    border: none;
+}
+
+#custom-layout.layout-H {
+    color: @teal;
+    text-shadow: 0 0 4px rgba(148, 226, 213, 0.25);
+}
+
+#custom-layout.layout-V {
+    color: @sky;
+    text-shadow: 0 0 4px rgba(137, 220, 235, 0.25);
+}
+
+#custom-layout.layout-T {
+    color: @peach;
+    text-shadow: 0 0 4px rgba(255, 218, 114, 0.25);
+}
+
+#custom-layout.layout-S {
+    color: @mauve;
+    text-shadow: 0 0 4px rgba(196, 186, 232, 0.25);
+}
+
+#custom-layout.layout-F {
+    color: @red;
+    text-shadow: 0 0 4px rgba(255, 114, 143, 0.25);
+}
+
+/* ========================================
+   电池
+   ======================================== */
+#battery {
+    color: @green;
+    padding: 0px 4px;
+    margin: 4px 0px;
+    border-radius: 8px;
+    background: rgba(196, 186, 232, 0.04);
+    border: 1px solid rgba(196, 186, 232, 0.02);
+    transition: all 0.2s ease;
+}
+
+#battery:hover {
+    background: rgba(196, 186, 232, 0.09);
+    border-color: rgba(196, 186, 232, 0.06);
+}
+
+#battery.charging {
+    color: @green;
+    text-shadow: 0 0 4px rgba(127, 255, 154, 0.3);
+}
+
+#battery.plugged,
+#battery.full {
+    color: @teal;
+    text-shadow: 0 0 4px rgba(148, 226, 213, 0.3);
+}
+
+#battery.warning:not(.charging) {
+    color: @peach;
+    text-shadow: 0 0 4px rgba(255, 218, 114, 0.3);
+}
+
+#battery.critical:not(.charging) {
+    color: @red;
+    text-shadow: 0 0 4px rgba(255, 114, 143, 0.35);
+    animation: battery-blink 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes battery-blink {
+    from { background: rgba(255, 114, 143, 0.06); }
+    to   { background: rgba(255, 114, 143, 0.18); }
+}
+
+/* ========================================
+   Idle Inhibitor
+   ======================================== */
+#idle_inhibitor {
+    padding: 0px 6px;
+    margin: 3px 2px;
+    border-radius: 8px;
+    background: rgba(196, 186, 232, 0.05);
+    border: 1px solid rgba(196, 186, 232, 0.03);
+    transition: all 0.25s ease;
+    font-size: 12px;
+}
+
+#idle_inhibitor:hover {
+    background: rgba(196, 186, 232, 0.10);
+    border-color: rgba(196, 186, 232, 0.08);
+}
+
+#idle_inhibitor.activated {
+    color: @base;
+    background: @mauve;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+#idle_inhibitor.activated:hover {
+    background: @lavender;
+    box-shadow: none;
+}
+
+#idle_inhibitor.deactivated {
+    color: @overlay1;
+    background: transparent;
+    border-color: rgba(196, 186, 232, 0.06);
+    box-shadow: none;
+}
