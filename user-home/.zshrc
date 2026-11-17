@@ -1,13 +1,19 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+# ============================================================
+# Zsh Configuration for Alpine Linux
+# ============================================================
+
+# ------------------------------------------------------------
+# Extentions
+# ------------------------------------------------------------
+# powerlevel10k
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# ============================================================
-# Zsh Configuration for Alpine Linux
-# ============================================================
+# Autoload zoxide
+if command -v zoxide > /dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+fi
 
 # ------------------------------------------------------------
 # History
@@ -56,13 +62,12 @@ bindkey '^[^[[C' forward-word
 # Aliases
 # ------------------------------------------------------------
 if command -v eza &> /dev/null; then
-    export EZA_ICONS_AUTO=1
-    alias ls='eza'
-    alias ll='eza -l'
+    alias ls='eza --icon'
+    alias ll='eza -l --git --group --links'
     alias la='eza -A'
-    alias l='eza -lA'
+    alias l='eza -lA --git --group --links'
 else
-    alias ls='ls --color=auto'
+    alias ls='ls --color=always'
     alias ll='ls -l'
     alias la='ls -A'
     alias l='ls -lAh'
@@ -161,6 +166,8 @@ else
 	export LC_ALL=zh_CN.UTF-8
 	export LANGUAGE=zh_CN:zh
 fi
+
+export XDG_CURRENT_DESKTOP=sway
 
 # Input Method
 #export GTK_IM_MODULE=fcitx
