@@ -150,11 +150,11 @@ fi
 # ------------------------------------------------------------
 # Environment Settings
 # ------------------------------------------------------------
-export PATH=/var/lib/flatpak/exports/share:/home/xue/.local/share/flatpak/exports/share:$PATH
+export PATH=/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share:$PATH
 export PATH=$HOME/.npm-global/bin:$PATH
-export PATH=/home/xue/.opencode/bin:$PATH
-export PATH=/home/xue/.cargo/bin:$PATH
-export PATH=/home/xue/.local/bin:$PATH
+export PATH=$HOME/.opencode/bin:$PATH
+export PATH=$HOME/.cargo/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 
 # Language
 if [ $TERM = linux ]; then
