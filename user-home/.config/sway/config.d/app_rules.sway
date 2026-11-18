@@ -1,0 +1,7 @@
+# 应用自动分配工作区（纯 sway 规则，不重命名、不杀进程）
+# 浏览器统一放到 3，聊天放到 5。
+# foot 不自动移动：终端经常需要在当前工作区临时打开（本会话也运行在 foot 上）。
+
+for_window [app_id="org.qutebrowser.qutebrowser"] move to workspace number 3
+for_window [app_id="firefox"] move to workspace number 3
+for_window [app_id="QQ"] move to workspace number 5
