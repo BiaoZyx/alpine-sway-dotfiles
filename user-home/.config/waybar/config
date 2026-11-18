@@ -91,7 +91,7 @@
 
     "custom/power": {
         "format": " ⏻ ",
-        "on-click": "~/.config/waybar/scripts/power.sh",
+        "on-click": "~/.config/waybar/scripts/power.sh --from-waybar",
         "tooltip": false
     },
 
