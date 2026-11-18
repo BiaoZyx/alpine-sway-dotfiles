@@ -12,4 +12,6 @@ case "$choice" in
     Sleep) swaylock & loginctl suspend ;;
     Reboot) dbus-run-session loginctl reboot ;;
     Shutdown) dbus-run-session loginctl poweroff ;;
+    # fuzzel 允许自由输入；未知选项不应触发任何操作。
+    *) exit 0 ;;
 esac

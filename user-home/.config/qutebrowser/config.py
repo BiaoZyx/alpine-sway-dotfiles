@@ -239,9 +239,10 @@ c.editor.command = [
     "{file}"
 ]
 
-# 主页（本地 Material You 主页）
-c.url.start_pages = 'file:///home/xue/.config/qutebrowser/home.html'
-c.url.default_page = 'file:///home/xue/.config/qutebrowser/home.html'
+# 主页（本地 Material You 主页）—— 不要硬编码用户名，便于仓库移植
+_HOME_PAGE = os.path.expanduser('~/.config/qutebrowser/home.html').replace(' ', '%20')
+c.url.start_pages = 'file://' + _HOME_PAGE
+c.url.default_page = 'file://' + _HOME_PAGE
 
 # 主页本地文件自带深色主题，跳过强制暗色滤镜
 config.set('colors.webpage.darkmode.enabled', False, 'file://*')

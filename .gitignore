@@ -1,0 +1,9 @@
+# 编译产物
+__pycache__/
+*.pyc
+
+# qutebrowser 自动生成或仅与本机相关的文件，不必提交
+user-home/.config/qutebrowser/autoconfig.yml
+user-home/.config/qutebrowser/links.js
+user-home/.config/qutebrowser/quickmarks.js
+user-home/.config/qutebrowser/qsettings/

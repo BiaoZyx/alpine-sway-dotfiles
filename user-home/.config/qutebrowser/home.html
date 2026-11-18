@@ -462,14 +462,27 @@ function renderQuickmarks(){
     if(!b||!b.url)return;
     var a=document.createElement('a');
     a.className='chip';
-    a.href=b.url;
+    a.href=safeUrl(b.url);
     a.title=b.url;
     var esc=(b.name&&b.name!=='')?b.name:b.url;
-    a.innerHTML=svg('star')+'<span class="txt">'+esc+'</span>';
+    a.innerHTML=svg('star')+'<span class="txt">'+escapeHtml(esc)+'</span>';
     a.addEventListener('pointerdown',ripple);
     bmBar.appendChild(a);
   });
   if(bmBar.childNodes.length)bmSection.hidden=false;
+}
+// 只允许 http/https 链接：localStorage 中保存的链接可能被其他本地页面污染，
+// 直接赋给 a.href 会让 javascript: 之类的 URL 在点击时执行。
+function safeUrl(u){
+  try{
+    var p=new URL(u,location.href);
+    return (p.protocol==='http:'||p.protocol==='https:')?p.href:'#';
+  }catch(e){return '#';}
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
 }
 function hostname(u){
   try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){return (u||'').replace(/^https?:\/\//,'').split('/')[0];}
@@ -478,7 +491,7 @@ function renderLinks(){
   grid.innerHTML='';
   LINKS.forEach(function(l,i){
     var a=document.createElement('a');
-    a.className='card';a.href=l.url;a.target='_self';a.dataset.index=i;
+    a.className='card';a.href=safeUrl(l.url);a.target='_self';a.dataset.index=i;
     var ac=ACCENTS[i%ACCENTS.length];
     var ick=(l.icon&&ICONS[l.icon])?l.icon:'link';
     var nm=l.name&&l.name!==''?l.name:(l.url||'');

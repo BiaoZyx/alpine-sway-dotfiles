@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-# dependencies: pipewire (pw-dump), v4l2loopback-dkms, jq, dbus-send (dbus)
-set -euo pipefail
+# dependencies: pipewire (pw-dump), jq, fuser, gdbus (dbus)
+set -eu
 
-JQ_BIN="${JQ:-jq}"
-PW_DUMP_CMD="${PW_DUMP:-pw-dump}"
+# 固定使用系统命令：不要用 JQ/PW_DUMP 环境变量覆盖命令名，
+# 否则攻击者若能控制 waybar 的环境即可注入任意命令（如 "jq | curl ..."）。
 
 mic=0
 cam=0
@@ -17,12 +17,12 @@ loc_app=""
 scr_app=""
 
 # mic & camera
-if command -v "$PW_DUMP_CMD" >/dev/null 2>&1 && command -v "$JQ_BIN" >/dev/null 2>&1; then
-  dump="$($PW_DUMP_CMD 2>/dev/null || true)"
+if command -v pw-dump >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+  dump="$(pw-dump 2>/dev/null || true)"
 
   mic="$(
     printf '%s' "$dump" \
-    | $JQ_BIN -r '
+    | jq -r '
       [ .[]
         | select(.type=="PipeWire:Interface:Node")
         | select((.info.props."media.class"=="Audio/Source" or .info.props."media.class"=="Audio/Source/Virtual"))
@@ -31,10 +31,10 @@ if command -v "$PW_DUMP_CMD" >/dev/null 2>&1 && command -v "$JQ_BIN" >/dev/null 
     ' 2>/dev/null || echo 0
   )"
 
-  if [[ "$mic" -eq 1 ]]; then
+  if [ "$mic" -eq 1 ]; then
     mic_app="$(
       printf '%s' "$dump" \
-      | $JQ_BIN -r '
+      | jq -r '
         [ .[]
           | select(.type=="PipeWire:Interface:Node")
           | select((.info.props."media.class"=="Stream/Input/Audio"))
@@ -60,37 +60,30 @@ if command -v "$PW_DUMP_CMD" >/dev/null 2>&1 && command -v "$JQ_BIN" >/dev/null 
   if command -v fuser >/dev/null 2>&1; then
       for dev in /dev/video*; do
           if [ -e "$dev" ] && fuser "$dev" >/dev/null 2>&1; then
-              pids=$(fuser "$dev" 2>/dev/null)
+              # fuser 的 PID 后面可能附带访问类型字母（如 1234c），
+              # 过滤掉非数字字符，避免 ps -p "1234c" 取不到进程名。
+              pids=$(fuser "$dev" 2>/dev/null | tr -cd '[:digit:][:space:]' || true)
               for pid in $pids; do
                   pname=$(ps -p "$pid" -o comm=)
-                  if [[ -n "$pname" ]]; then
-                      cam_app+="$pname, "
+                  if [ -n "$pname" ]; then
+                      cam_app="${cam_app}$pname, "
                   fi
               done
           fi
       done
       cam_app="${cam_app%, }"
   fi
-
 fi
 
 # location
-if command -v gdbus >/dev/null 2>&1; then
-  loc="$(
-    if ps aux | grep [g]eoclue >/dev/null 2>&1; then
-      echo 1
-    else
-      echo 0
-    fi
-  )"
-fi
-
+# 不使用 `ps aux | grep [g]eoclue`：它会把命令行里恰好含 "geoclue" 的
+# 无关进程误判为定位服务。这里用 pgrep -x 精确匹配进程名。
 if command -v gdbus >/dev/null 2>&1; then
     if pids=$(pgrep -x geoclue); then
         loc=1
         for pid in $pids; do
             pname=$(ps -p "$pid" -o comm=)
-            [[ -n "$pname" ]] && loc_app+="$pname, "
+            [ -n "$pname" ] && loc_app="${loc_app}$pname, "
         done
         loc_app="${loc_app%, }"
     else
@@ -99,14 +92,14 @@ if command -v gdbus >/dev/null 2>&1; then
 fi
 
 # screen sharing
-if command -v "$PW_DUMP_CMD" >/dev/null 2>&1 && command -v "$JQ_BIN" >/dev/null 2>&1; then
-  if [[ -z "${dump:-}" ]]; then
-    dump="$($PW_DUMP_CMD 2>/dev/null || true)"
+if command -v pw-dump >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+  if [ -z "${dump:-}" ]; then
+    dump="$(pw-dump 2>/dev/null || true)"
   fi
 
   scr="$(
       printf '%s' "$dump" \
-      | $JQ_BIN -e '
+      | jq -e '
           [ .[]
             | select(.info?.props?)
             | select(
@@ -119,10 +112,10 @@ if command -v "$PW_DUMP_CMD" >/dev/null 2>&1 && command -v "$JQ_BIN" >/dev/null 
     )"
 fi
 
-if [[ "$scr" -eq 1 ]]; then
+if [ "$scr" -eq 1 ]; then
     scr_app="$(
     printf '%s' "$dump" \
-    |   $JQ_BIN -r '
+    |   jq -r '
         [ .[]
           | select(.type=="PipeWire:Interface:Node")
           | select((.info.props."media.class"=="Stream/Input/Video") or (.info.props."media.name"=="gsr-default_output") or (.info.props."media.name"=="game capture"))
@@ -140,47 +133,40 @@ blue="#0A84FF"
 purple="#9B32FA"
 
 dot() {
-  local on="$1" color="$2"
-  if [[ "$on" -eq 1 ]]; then
-    printf '<span foreground="%s">●</span>' "$color"
+  dot_on="$1" dot_color="$2"
+  if [ "$dot_on" -eq 1 ]; then
+    printf '<span foreground="%s">●</span>' "$dot_color"
   else
     printf ''
   fi
 }
 
-dots=()
-mic_dot="$(dot "$mic" "$green")"; [[ -n "$mic_dot" ]] && dots+=("$mic_dot")
-cam_dot="$(dot "$cam" "$orange")"; [[ -n "$cam_dot" ]] && dots+=("$cam_dot")
-loc_dot="$(dot "$loc" "$blue")"; [[ -n "$loc_dot" ]] && dots+=("$loc_dot")
-scr_dot="$(dot "$scr" "$purple")"; [[ -n "$scr_dot" ]] && dots+=("$scr_dot")
-
-#text="${dots[*]}"
 text=""
-[[ "$mic" -eq 1 ]] && text+='<span foreground="'$green'"></span> '
-[[ "$cam" -eq 1 ]] && text+='<span foreground="'$orange'"></span> '
-[[ "$loc" -eq 1 ]] && text+='<span foreground="'$blue'">󰌀</span> '
-[[ "$scr" -eq 1 ]] && text+='<span foreground="'$purple'"></span> '
+[ "$mic" -eq 1 ] && text="${text}<span foreground=\"$green\"></span> "
+[ "$cam" -eq 1 ] && text="${text}<span foreground=\"$orange\"></span> "
+[ "$loc" -eq 1 ] && text="${text}<span foreground=\"$blue\">󰌀</span> "
+[ "$scr" -eq 1 ] && text="${text}<span foreground=\"$purple\"></span> "
 text="${text% }"
 
-if [[ -n "$mic_app" ]]; then
+if [ -n "$mic_app" ]; then
   mic_status="Mic: $mic_app"
 else
   mic_status="Mic: off"
 fi
 
-if [[ -n "$cam_app" ]]; then
+if [ -n "$cam_app" ]; then
   cam_status="Cam: $cam_app"
 else
   cam_status="Cam: off"
 fi
 
-if [[ -n "$loc_app" ]]; then
+if [ -n "$loc_app" ]; then
   loc_status="Location: $loc_app"
 else
   loc_status="Location: off"
 fi
 
-if [[ -n "$scr_app" ]]; then
+if [ -n "$scr_app" ]; then
   scr_status="Screen sharing: $scr_app"
 else
   scr_status="Screen sharing: off"
@@ -189,10 +175,10 @@ fi
 tooltip="$mic_status  |  $cam_status  |  $loc_status  |  $scr_status"
 
 classes="privacydot"
-[[ $mic -eq 1 ]] && classes="$classes mic-on" || classes="$classes mic-off"
-[[ $cam -eq 1 ]] && classes="$classes cam-on" || classes="$classes cam-off"
-[[ $loc -eq 1 ]] && classes="$classes loc-on" || classes="$classes loc-off"
-[[ $scr -eq 1 ]] && classes="$classes scr-on" || classes="$classes scr-off"
+[ "$mic" -eq 1 ] && classes="$classes mic-on" || classes="$classes mic-off"
+[ "$cam" -eq 1 ] && classes="$classes cam-on" || classes="$classes cam-off"
+[ "$loc" -eq 1 ] && classes="$classes loc-on" || classes="$classes loc-off"
+[ "$scr" -eq 1 ] && classes="$classes scr-on" || classes="$classes scr-off"
 
 jq -c -n --arg text "$text" --arg tooltip "$tooltip" --arg class "$classes" \
   '{text:$text, tooltip:$tooltip, class:$class}'
