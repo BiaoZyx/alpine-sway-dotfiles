@@ -2,10 +2,14 @@
 # Author: BiaoZyx
 # Email: BiaoZyx@outlook.com
 # Date: 2026-08-26 19:26:20
-# Revised: 不再用 SIGKILL 强杀 dbus-daemon，改用 XDG_RUNTIME_DIR，
-#          并避免 sway reload 时重复启动后台服务。
+# Revised: 使用 XDG_RUNTIME_DIR；不 SIGKILL dbus-daemon；按 socket 判断服务；
+#          清理上一会话残留进程；提高 FD 上限避免 waybar 撞到 1024。
 
 set -u
+
+# waybar 的 pulseaudio 模块在 PulseAudio 不可达时会快速重试并泄漏 FD，
+# 软上限 1024 很快耗尽。硬上限通常是 4096，这里尽可能提高。
+ulimit -n 4096 2>/dev/null || true
 
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 BUS_SOCKET="$RUNTIME_DIR/bus"
@@ -26,8 +30,7 @@ bus_ok() {
 
 # ------------------------------
 # D-Bus：复用已有的健康的会话总线；只有在没有可用总线时才新建。
-# 绝不 killall -9 dbus-daemon：那会杀死其他应用正在使用的总线，
-# 且 SIGKILL 无法让守护进程正常清理，反而容易造成 DBus 异常。
+# 绝不 killall -9 dbus-daemon：那会杀死其他应用正在使用的总线。
 # ------------------------------
 if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ] && bus_ok "$DBUS_SESSION_BUS_ADDRESS"; then
     : # 继承到可用的会话总线，保持不变
@@ -46,28 +49,54 @@ else
 fi
 
 # ------------------------------
-# 启动服务（带存在性检查，防止 sway reload 后出现重复实例）
+# 清理上一个 sway 会话残留的服务。
+# 这些进程若存活，会让下面基于 pgrep 的判断误以为服务已启动，
+# 但它们并没有在当前 XDG_RUNTIME_DIR 中建立 socket（典型症状：
+# pw-dump 报 "can't connect: Host is down"、waybar pulseaudio 模块刷屏）。
+# 用 TERM 而非 KILL；不碰 dbus-daemon。
+# ------------------------------
+for _name in pipewire pipewire-pulse wireplumber waybar fnott fcitx5; do
+    pkill -TERM -x "$_name" 2>/dev/null || true
+done
+pkill -TERM -f 'layout_watcher.sh' 2>/dev/null || true
+pkill -TERM -f 'wl-paste --watch cliphist store' 2>/dev/null || true
+sleep 1
+
+# ------------------------------
+# 启动服务
 # ------------------------------
 if command -v rtkitctl >/dev/null 2>&1; then
     rtkitctl --start >/dev/null 2>&1 || true
 fi
 
-pgrep -x pipewire >/dev/null 2>&1 || pipewire &
-pgrep -x pipewire-pulse >/dev/null 2>&1 || pipewire-pulse &
-pgrep -x wireplumber >/dev/null 2>&1 || wireplumber &
-# 注意：wayland-pipewire-idle-inhibit 已由 config.d/idle.sway 启动，此处不重复启动。
+# 音频：按 socket 判断，确保真正在当前会话可用
+if [ ! -S "$RUNTIME_DIR/pipewire-0" ]; then
+    pipewire &
+    _i=0
+    while [ "$_i" -lt 30 ] && [ ! -S "$RUNTIME_DIR/pipewire-0" ]; do
+        sleep 0.2
+        _i=$((_i + 1))
+    done
+fi
+if [ ! -S "$RUNTIME_DIR/pulse/native" ]; then
+    pipewire-pulse &
+fi
+if ! pgrep -x wireplumber >/dev/null 2>&1; then
+    wireplumber &
+fi
+# wayland-pipewire-idle-inhibit 已由 config.d/idle.sway 启动，此处不重复启动。
 
-# Waybar 布局监听脚本（wayland 工作区状态）
-pgrep -f 'layout_watcher.sh' >/dev/null 2>&1 || ~/.config/waybar/scripts/layout_watcher.sh &
+# Waybar 布局监听脚本
+~/.config/waybar/scripts/layout_watcher.sh &
 
 # 输入法
-pgrep -x fcitx5 >/dev/null 2>&1 || fcitx5 -d &
+fcitx5 -d &
 
 # 剪切板
-pgrep -f 'wl-paste --watch cliphist store' >/dev/null 2>&1 || wl-paste --watch cliphist store &
+wl-paste --watch cliphist store &
 
 # Waybar
-pgrep -x waybar >/dev/null 2>&1 || waybar &
+waybar &
 
 # 通知服务
-pgrep -x fnott >/dev/null 2>&1 || fnott &
+fnott &
