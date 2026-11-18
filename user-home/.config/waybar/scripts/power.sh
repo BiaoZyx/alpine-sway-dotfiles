@@ -1,6 +1,6 @@
 #!/bin/sh
 #choice=$(printf "Lock\nLogout\nSleep\nReboot\nShutdown" | rofi -dmenu -p "Power")
-choice=$(printf "Lock\nLogout\nSleep\nReboot\nShutdown" | fuzzel --dmenu -p "Power | ")
+choice=$(printf "Lock\nLogout\nSleep\nReboot\nShutdown" | fuzzel --dmenu -p "Power" --width 16 --lines 5 --minimal-lines)
 
 if [ -z "$choice" ]; then
     exit 0

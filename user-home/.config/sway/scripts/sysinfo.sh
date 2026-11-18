@@ -27,4 +27,4 @@ UPD=$(timeout 8 apk upgrade -s 2>/dev/null | grep -c '^Inst' || true)
 
 printf '内存: %s\n磁盘: %s\nCPU 温度: %s\nIP: %s\n电池: %s\n可更新包: %s\n' \
   "${MEM:-未知}" "${DISK:-未知}" "${TEMP:-未知}" "${IP:-无}" "${BAT:-无}" "${UPD:-未知}" \
-  | fuzzel --dmenu -p "系统信息 | " >/dev/null
+  | fuzzel --dmenu --hide-prompt --width 34 --lines 6 --minimal-lines >/dev/null
