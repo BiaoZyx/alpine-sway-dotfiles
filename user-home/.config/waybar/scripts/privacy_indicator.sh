@@ -30,6 +30,12 @@ if command -v pw-dump >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
       ] | (if length>0 then 1 else 0 end)
     ' 2>/dev/null || echo 0
   )"
+  # pw-dump 连不上 PipeWire 时会输出空内容；jq 对空输入返回成功但无输出，
+  # 所以必须在这里兜底，否则 [ "$mic" -eq 1 ] 会在 ash 下报 "out of range"。
+  case "$mic" in
+    0|1) ;;
+    *)   mic=0 ;;
+  esac
 
   if [ "$mic" -eq 1 ]; then
     mic_app="$(
@@ -110,6 +116,11 @@ if command -v pw-dump >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
           | (if length > 0 then true else false end)
         ' >/dev/null && echo 1 || echo 0
     )"
+  # 同样处理空 dump 导致 jq 无输出的情况
+  case "$scr" in
+    0|1) ;;
+    *)   scr=0 ;;
+  esac
 fi
 
 if [ "$scr" -eq 1 ]; then
