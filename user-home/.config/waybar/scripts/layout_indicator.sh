@@ -2,31 +2,29 @@
 
 set -eu
 
-# 加超时：sway IPC 偶尔卡住时不要让 waybar 的信号处理无限期阻塞。
-FOCUSED_JSON=$(timeout 2 swaymsg -t get_tree 2>/dev/null || printf '[]')
+# get_tree 的根节点是 output，不是 workspace；原来从 .nodes[] 取 focused
+# 工作区的方式永远取不到值，字母一直是默认的 H。get_workspaces 直接提供
+# focused / representation / layout，更快也更可靠。
+WORKSPACES=$(timeout 2 swaymsg -t get_workspaces 2>/dev/null || printf '[]')
 
-# 取 representation 第一个字母（cut 读完整行，不会像 head -c 那样触发 SIGPIPE）
-WS_NAME=$(printf '%s' "$FOCUSED_JSON" | jq -r '.nodes[] | select(.focused) | .name')
-REPRESENTATION=$(printf '%s' "$FOCUSED_JSON" | jq -r --arg ws "$WS_NAME" '
-  [.nodes[] | select(.name == $ws)][0].representation // ""
-')
+REPRESENTATION=$(printf '%s' "$WORKSPACES" \
+  | jq -r '[.[] | select(.focused == true)][0].representation // ""')
+
 LAYOUT=$(printf '%s' "$REPRESENTATION" | cut -c 1)
 LAYOUT=${LAYOUT:-H}
 
-# representation 为 null 时（单窗口），fallback 到父容器 layout
+# representation 为 null（单窗口）时回退到工作区自身的 layout
 if [ -z "$REPRESENTATION" ] || [ "$REPRESENTATION" = "null" ]; then
-  LAYOUT=$(printf '%s' "$FOCUSED_JSON" | jq -r '
-    [.. | objects | select(.focused == true and .app_id != null)][0] as $leaf |
-    [.. | objects | select(.nodes[]? | select(.id == $leaf.id))][0].layout // "splith"
-  ')
+  LAYOUT=$(printf '%s' "$WORKSPACES" \
+    | jq -r '[.[] | select(.focused == true)][0].layout // "splith"')
 fi
 
 case "$LAYOUT" in
-  splith)   icon="H"; class="layout-H" ;;
-  splitv)   icon="V"; class="layout-V" ;;
-  tabbed)   icon="T"; class="layout-T" ;;
-  stacked)  icon="S"; class="layout-S" ;;
-  *)        icon="$LAYOUT"; class="" ;;
+  H|splith)  icon="H"; class="layout-H" ;;
+  V|splitv)  icon="V"; class="layout-V" ;;
+  T|tabbed)  icon="T"; class="layout-T" ;;
+  S|stacked) icon="S"; class="layout-S" ;;
+  *)         icon="$LAYOUT"; class="" ;;
 esac
 
 jq -c -n --arg text "$icon" --arg class "$class" '{text:$text, class:$class}'
