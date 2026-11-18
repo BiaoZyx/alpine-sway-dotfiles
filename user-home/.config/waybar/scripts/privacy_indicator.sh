@@ -10,6 +10,8 @@ mic=0
 cam=0
 loc=0
 scr=0
+rec=0
+mic_muted=0
 
 mic_app=""
 cam_app=""
@@ -138,7 +140,20 @@ if [ "$scr" -eq 1 ]; then
     )"
 fi
 
+# 录屏状态（与麦克风/摄像头同属 privacy 模块）
+if pgrep -x wf-recorder >/dev/null 2>&1; then
+  rec=1
+fi
+
+# 麦克风静音状态：静音时显示独立的静音图标，这样按静音键有可见反馈
+if command -v wpctl >/dev/null 2>&1; then
+  if wpctl get-volume @DEFAULT_SOURCE@ 2>/dev/null | grep -q '\[MUTED\]'; then
+    mic_muted=1
+  fi
+fi
+
 # output
+red="#FF728F"
 green="#30D158"
 orange="#FF9F0A"
 blue="#0A84FF"
@@ -154,13 +169,20 @@ dot() {
 }
 
 text=""
-[ "$mic" -eq 1 ] && text="${text}<span foreground=\"$green\"></span> "
+if [ "$mic_muted" -eq 1 ]; then
+  text="${text}<span foreground=\"$red\">󰝟</span> "
+elif [ "$mic" -eq 1 ]; then
+  text="${text}<span foreground=\"$green\"></span> "
+fi
 [ "$cam" -eq 1 ] && text="${text}<span foreground=\"$orange\"></span> "
 [ "$loc" -eq 1 ] && text="${text}<span foreground=\"$blue\">󰌀</span> "
 [ "$scr" -eq 1 ] && text="${text}<span foreground=\"$purple\"></span> "
+[ "$rec" -eq 1 ] && text="${text}<span foreground=\"$red\">●</span> "
 text="${text% }"
 
-if [ -n "$mic_app" ]; then
+if [ "$mic_muted" -eq 1 ]; then
+  mic_status="Mic: muted"
+elif [ -n "$mic_app" ]; then
   mic_status="Mic: $mic_app"
 else
   mic_status="Mic: off"
@@ -184,13 +206,21 @@ else
   scr_status="Screen sharing: off"
 fi
 
-tooltip="$mic_status  |  $cam_status  |  $loc_status  |  $scr_status"
+if [ "$rec" -eq 1 ]; then
+  rec_status="Recording: wf-recorder (click to stop)"
+else
+  rec_status="Recording: off"
+fi
+
+tooltip="$mic_status  |  $cam_status  |  $loc_status  |  $scr_status  |  $rec_status"
 
 classes="privacydot"
 [ "$mic" -eq 1 ] && classes="$classes mic-on" || classes="$classes mic-off"
+[ "$mic_muted" -eq 1 ] && classes="$classes mic-muted"
 [ "$cam" -eq 1 ] && classes="$classes cam-on" || classes="$classes cam-off"
 [ "$loc" -eq 1 ] && classes="$classes loc-on" || classes="$classes loc-off"
 [ "$scr" -eq 1 ] && classes="$classes scr-on" || classes="$classes scr-off"
+[ "$rec" -eq 1 ] && classes="$classes rec-on" || classes="$classes rec-off"
 
 jq -c -n --arg text "$text" --arg tooltip "$tooltip" --arg class "$classes" \
   '{text:$text, tooltip:$tooltip, class:$class}'

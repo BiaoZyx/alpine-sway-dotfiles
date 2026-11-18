@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces", "custom/layout", "sway/mode", "idle_inhibitor"],
     "modules-center": ["custom/privacy", "sway/window"],
-    "modules-right": ["network", "pulseaudio", "cpu", "memory", "clock", "battery", "custom/record", /*"custom/clipman", "custom/notif",*/ "tray", "custom/power"],
+    "modules-right": ["network", "pulseaudio", "cpu", "memory", "clock", "battery", /*"custom/clipman", "custom/notif",*/ "tray", "custom/power"],
 
     "sway/workspaces": {
         //"disable-scroll": true,
@@ -83,14 +83,6 @@
         "exec": "~/.config/waybar/scripts/privacy_indicator.sh",
         "return-type": "json",
         "interval": 3,
-        "format": "{}",
-        "tooltip": false
-    },
-
-    "custom/record": {
-        "exec": "~/.config/waybar/scripts/record_indicator.sh",
-        "return-type": "json",
-        "interval": 1,
         "format": "{}",
         "tooltip": true,
         "on-click": "pkill -SIGINT -x wf-recorder"
