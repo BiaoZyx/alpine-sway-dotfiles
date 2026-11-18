@@ -2,7 +2,8 @@
 
 set -eu
 
-FOCUSED_JSON=$(swaymsg -t get_tree)
+# 加超时：sway IPC 偶尔卡住时不要让 waybar 的信号处理无限期阻塞。
+FOCUSED_JSON=$(timeout 2 swaymsg -t get_tree 2>/dev/null || printf '[]')
 
 # 取 representation 第一个字母（cut 读完整行，不会像 head -c 那样触发 SIGPIPE）
 WS_NAME=$(printf '%s' "$FOCUSED_JSON" | jq -r '.nodes[] | select(.focused) | .name')

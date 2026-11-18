@@ -18,7 +18,8 @@ scr_app=""
 
 # mic & camera
 if command -v pw-dump >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
-  dump="$(pw-dump 2>/dev/null || true)"
+  # pw-dump 在 PipeWire 不稳定时可能挂住，加超时避免 waybar 的定时执行被拖死。
+  dump="$(timeout 3 pw-dump 2>/dev/null || true)"
 
   mic="$(
     printf '%s' "$dump" \
@@ -54,7 +55,7 @@ if command -v pw-dump >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
   if command -v fuser >/dev/null 2>&1; then
       cam=0
       for dev in /dev/video*; do
-          if [ -e "$dev" ] && fuser "$dev" >/dev/null 2>&1; then
+          if [ -e "$dev" ] && timeout 1 fuser "$dev" >/dev/null 2>&1; then
               cam=1
               break
           fi
@@ -65,10 +66,10 @@ if command -v pw-dump >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
 
   if command -v fuser >/dev/null 2>&1; then
       for dev in /dev/video*; do
-          if [ -e "$dev" ] && fuser "$dev" >/dev/null 2>&1; then
+          if [ -e "$dev" ] && timeout 1 fuser "$dev" >/dev/null 2>&1; then
               # fuser 的 PID 后面可能附带访问类型字母（如 1234c），
               # 过滤掉非数字字符，避免 ps -p "1234c" 取不到进程名。
-              pids=$(fuser "$dev" 2>/dev/null | tr -cd '[:digit:][:space:]' || true)
+              pids=$(timeout 1 fuser "$dev" 2>/dev/null | tr -cd '[:digit:][:space:]' || true)
               for pid in $pids; do
                   pname=$(ps -p "$pid" -o comm=)
                   if [ -n "$pname" ]; then
@@ -100,7 +101,7 @@ fi
 # screen sharing
 if command -v pw-dump >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
   if [ -z "${dump:-}" ]; then
-    dump="$(pw-dump 2>/dev/null || true)"
+    dump="$(timeout 3 pw-dump 2>/dev/null || true)"
   fi
 
   scr="$(

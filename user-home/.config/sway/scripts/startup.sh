@@ -58,7 +58,7 @@ fi
 for _name in pipewire pipewire-pulse wireplumber waybar fnott fcitx5; do
     pkill -TERM -x "$_name" 2>/dev/null || true
 done
-pkill -TERM -f 'layout_watcher.sh' 2>/dev/null || true
+pkill -TERM -f '[l]ayout_watcher.sh' 2>/dev/null || true
 pkill -TERM -f 'wl-paste --watch cliphist store' 2>/dev/null || true
 sleep 1
 
