@@ -22,9 +22,16 @@ for b in /sys/class/power_supply/BAT*/capacity; do
   break
 done
 
-UPD=$(timeout 8 apk upgrade -s 2>/dev/null | grep -c '^Inst' || true)
+# apk 3.x 的可更新项输出格式是 "(1/11) Upgrading ..."，旧版是 "Inst ..."。
+# 注意字面量 '(' 在 grep -E 里是分组符，必须用基本正则转义。
+apk_out=$(timeout 20 apk upgrade -s 2>/dev/null || printf '')
+UPD=$(printf '%s\n' "$apk_out" | grep -c '^([0-9][0-9]*/' || true)
+inst=$(printf '%s\n' "$apk_out" | grep -c '^Inst ' || true)
+UPD=$((UPD + inst))
 [ "$UPD" = "0" ] && UPD="无"
 
-printf '内存: %s\n磁盘: %s\nCPU 温度: %s\nIP: %s\n电池: %s\n可更新包: %s\n' \
-  "${MEM:-未知}" "${DISK:-未知}" "${TEMP:-未知}" "${IP:-无}" "${BAT:-无}" "${UPD:-未知}" \
-  | fuzzel --dmenu --hide-prompt --width 34 --lines 6 --minimal-lines >/dev/null
+info=$(printf '内存: %s\n磁盘: %s\nCPU 温度: %s\nIP: %s\n电池: %s\n可更新包: %s\n' \
+  "${MEM:-未知}" "${DISK:-未知}" "${TEMP:-未知}" "${IP:-无}" "${BAT:-无}" "${UPD:-未知}")
+
+# 用 --mesg 显示纯信息 + 空 stdin：没有输入栏、没有光标，按键不参与过滤。
+printf '' | fuzzel --dmenu --hide-prompt --mesg "$info" --width 34 --minimal-lines >/dev/null
