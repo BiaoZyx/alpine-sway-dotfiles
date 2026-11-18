@@ -51,7 +51,7 @@ bindsym $mod+Ctrl+n exec fnottctl dismiss-with-default-action # 触发默认操�
 bindsym $mod+x exec ~/.config/waybar/scripts/power.sh
 
 # 麦克风静音切换 / 系统信息面板
-bindsym $mod+m exec wpctl set-mute @DEFAULT_SOURCE@ toggle
+bindsym $mod+m exec sh -c 'wpctl set-mute @DEFAULT_SOURCE@ toggle; pkill -SIGRTMIN+8 -x waybar'
 bindsym $mod+i exec ~/.config/sway/scripts/sysinfo.sh
 
 # ------------------------------

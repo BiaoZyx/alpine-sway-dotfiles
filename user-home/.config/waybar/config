@@ -82,7 +82,7 @@
     "custom/privacy": {
         "exec": "~/.config/waybar/scripts/privacy_indicator.sh",
         "return-type": "json",
-        "interval": 3,
+        "interval": 1,
         "format": "{}",
         "tooltip": true,
         "on-click": "pkill -SIGINT -x wf-recorder"

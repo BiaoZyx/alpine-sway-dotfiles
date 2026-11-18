@@ -170,7 +170,7 @@ dot() {
 
 text=""
 if [ "$mic_muted" -eq 1 ]; then
-  text="${text}<span foreground=\"$red\">󰝟</span> "
+  text="${text}<span foreground=\"$red\"></span> "
 elif [ "$mic" -eq 1 ]; then
   text="${text}<span foreground=\"$green\"></span> "
 fi
