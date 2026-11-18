@@ -50,6 +50,10 @@ bindsym $mod+Ctrl+n exec fnottctl dismiss-with-default-action # 触发默认操�
 
 bindsym $mod+x exec ~/.config/waybar/scripts/power.sh
 
+# 麦克风静音切换 / 系统信息面板
+bindsym $mod+m exec wpctl set-mute @DEFAULT_SOURCE@ toggle
+bindsym $mod+i exec ~/.config/sway/scripts/sysinfo.sh
+
 # ------------------------------
 # Default Core Bindings
 # ------------------------------
@@ -140,8 +144,8 @@ bindsym $mod+r mode "resize"
 # Custom Core Keybindings
 # ------------------------------
 # 锁屏 & 睡眠
-bindsym $mod+Alt+L exec swaylock                        # 锁屏
-bindsym $mod+Shift+S exec swaylock & loginctl suspend   # 睡眠
+bindsym $mod+Alt+L exec sh -c 'playerctl pause; swaylock'              # 锁屏前暂停媒体
+bindsym $mod+Shift+S exec sh -c 'playerctl pause; swaylock & loginctl suspend'  # 睡眠前暂停媒体
 
 # 媒体与音量 (修正为 amixer)
 bindsym --locked XF86AudioMute exec amixer sset Master toggle
