@@ -30,7 +30,7 @@ fi
 case "$choice" in
     Lock) playerctl pause; swaylock ;;
     Logout) swaymsg exit ;;
-    Sleep) playerctl pause; swaylock & loginctl suspend ;;
+    Sleep) playerctl pause; swaylock & loginctl suspend; ~/.config/sway/scripts/restart_waybar.sh ;;
     Reboot) dbus-run-session loginctl reboot ;;
     Shutdown) dbus-run-session loginctl poweroff ;;
     # fuzzel 允许自由输入；未知选项不应触发任何操作。

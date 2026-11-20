@@ -145,7 +145,7 @@ bindsym $mod+r mode "resize"
 # ------------------------------
 # 锁屏 & 睡眠
 bindsym $mod+Alt+L exec sh -c 'playerctl pause; swaylock'              # 锁屏前暂停媒体
-bindsym $mod+Shift+S exec sh -c 'playerctl pause; swaylock & loginctl suspend'  # 睡眠前暂停媒体
+bindsym $mod+Shift+S exec sh -c 'playerctl pause; swaylock & loginctl suspend; ~/.config/sway/scripts/restart_waybar.sh'  # 睡眠前暂停媒体，唤醒后重启 waybar
 
 # 媒体与音量 (修正为 amixer)
 bindsym --locked XF86AudioMute exec amixer sset Master toggle
