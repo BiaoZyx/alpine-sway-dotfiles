@@ -11,11 +11,14 @@ for arg in "$@"; do
             # waybar 菜单按鼠标逻辑：失去键盘焦点就关闭。
             # fuzzel 没有正向的 CLI 开关，只有 --no-exit-on-keyboard-focus-loss，
             # 所以临时复制一份配置并覆盖该选项。
-            cfg=$(mktemp "${TMPDIR:-/tmp}/power-fuzzel.XXXXXX")
-            sed 's/^exit-on-keyboard-focus-loss=.*/exit-on-keyboard-focus-loss=yes/' \
-                "${XDG_CONFIG_HOME:-$HOME/.config}/fuzzel/fuzzel.ini" >"$cfg"
-            config_arg="--config=$cfg"
-            trap 'rm -f "$cfg"' EXIT
+            ini="${XDG_CONFIG_HOME:-$HOME/.config}/fuzzel/fuzzel.ini"
+            if [ -f "$ini" ]; then
+                cfg=$(mktemp "${TMPDIR:-/tmp}/power-fuzzel.XXXXXX")
+                sed 's/^exit-on-keyboard-focus-loss=.*/exit-on-keyboard-focus-loss=yes/' \
+                    "$ini" >"$cfg"
+                config_arg="--config=$cfg"
+                trap 'rm -f "$cfg"' EXIT
+            fi
             ;;
     esac
 done

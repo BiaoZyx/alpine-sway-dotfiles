@@ -159,15 +159,6 @@ orange="#FF9F0A"
 blue="#0A84FF"
 purple="#9B32FA"
 
-dot() {
-  dot_on="$1" dot_color="$2"
-  if [ "$dot_on" -eq 1 ]; then
-    printf '<span foreground="%s">●</span>' "$dot_color"
-  else
-    printf ''
-  fi
-}
-
 text=""
 if [ "$mic_muted" -eq 1 ]; then
   text="${text}<span foreground=\"$red\"></span> "

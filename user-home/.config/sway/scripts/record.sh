@@ -15,6 +15,8 @@ case "${1:-}" in
         mkdir -p "$dir"
         notify-send "开始录屏" "wf-recorder"
         geometry=$(slurp)
+        # 用户按 Esc 取消选区时直接退出，不要把空区域交给 wf-recorder
+        [ -n "$geometry" ] || exit 0
         exec wf-recorder -g "$geometry" -f "$file"
         ;;
     stop)

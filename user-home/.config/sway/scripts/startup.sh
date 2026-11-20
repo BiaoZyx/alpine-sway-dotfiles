@@ -66,6 +66,14 @@ sleep 1
 pkill -KILL -f '[l]ayout_watcher.sh' 2>/dev/null || true
 sleep 1
 
+# 旧音频进程若没来得及清理 socket 文件，会让下面的 [ -S ] 判断误以为服务还在。
+# 没有进程占用的 socket 直接删掉；有进程占用的保留。
+for sock in pipewire-0 pulse/native; do
+    if [ -S "$RUNTIME_DIR/$sock" ] && ! fuser "$RUNTIME_DIR/$sock" >/dev/null 2>&1; then
+        rm -f "$RUNTIME_DIR/$sock"
+    fi
+done
+
 # ------------------------------
 # 启动服务
 # ------------------------------

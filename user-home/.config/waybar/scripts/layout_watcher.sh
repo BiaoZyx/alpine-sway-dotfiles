@@ -29,15 +29,15 @@ while :; do
     msgpid=$!
 
     while IFS= read -r event; do
-        case "$event" in
-            *'"change": "run"'*|*'"change":"run"'*)
-                cmd=$(printf '%s' "$event" | jq -r '.binding.command // ""' 2>/dev/null || printf '')
-                case "$cmd" in
-                    splith|splitv|layout*|fullscreen*) ;;
-                    *) continue ;;
-                esac
-                ;;
-        esac
+        # 用 jq 解析 change 字段，不依赖 JSON 里冒号后是否有空格。
+        change=$(printf '%s' "$event" | jq -r '.change // ""' 2>/dev/null || printf '')
+        if [ "$change" = "run" ]; then
+            cmd=$(printf '%s' "$event" | jq -r '.binding.command // ""' 2>/dev/null || printf '')
+            case "$cmd" in
+                splith|splitv|layout*|fullscreen*) ;;
+                *) continue ;;
+            esac
+        fi
         pkill -SIGRTMIN+8 -x waybar 2>/dev/null || true
     done <"$fifo"
 
