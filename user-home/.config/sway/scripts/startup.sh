@@ -61,6 +61,14 @@ done
 pkill -TERM -f '[l]ayout_watcher.sh' 2>/dev/null || true
 pkill -TERM -x swaymsg 2>/dev/null || true
 pkill -TERM -f 'wl-paste --watch cliphist store' 2>/dev/null || true
+
+# 清理上一会话遗留的 D-Bus 会话级 helper：at-spi（无障碍总线）、
+# xdg-desktop-portal（屏幕共享等）、gvfs（虚拟文件系统）。
+# 它们会在真正被用到时由 D-Bus 按需重新拉起，留着旧实例只是纯内存浪费，
+# 而且每次重新登录都会再叠一套。
+for pat in 'at-spi-bus-launcher' 'at-spi2-registryd' 'xdg-desktop-portal' 'gvfsd'; do
+    pkill -TERM -f "$pat" 2>/dev/null || true
+done
 # 兜底：极端情况下（进程卡在不可中断等待）TERM 可能不生效，1 秒后清理残留。
 sleep 1
 pkill -KILL -f '[l]ayout_watcher.sh' 2>/dev/null || true
