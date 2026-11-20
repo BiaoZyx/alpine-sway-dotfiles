@@ -59,7 +59,11 @@ for _name in pipewire pipewire-pulse wireplumber waybar fnott fcitx5; do
     pkill -TERM -x "$_name" 2>/dev/null || true
 done
 pkill -TERM -f '[l]ayout_watcher.sh' 2>/dev/null || true
+pkill -TERM -x swaymsg 2>/dev/null || true
 pkill -TERM -f 'wl-paste --watch cliphist store' 2>/dev/null || true
+# 兜底：极端情况下（进程卡在不可中断等待）TERM 可能不生效，1 秒后清理残留。
+sleep 1
+pkill -KILL -f '[l]ayout_watcher.sh' 2>/dev/null || true
 sleep 1
 
 # ------------------------------
@@ -80,6 +84,11 @@ if [ ! -S "$RUNTIME_DIR/pipewire-0" ]; then
 fi
 if [ ! -S "$RUNTIME_DIR/pulse/native" ]; then
     pipewire-pulse &
+    _i=0
+    while [ "$_i" -lt 30 ] && [ ! -S "$RUNTIME_DIR/pulse/native" ]; do
+        sleep 0.2
+        _i=$((_i + 1))
+    done
 fi
 if ! pgrep -x wireplumber >/dev/null 2>&1; then
     wireplumber &

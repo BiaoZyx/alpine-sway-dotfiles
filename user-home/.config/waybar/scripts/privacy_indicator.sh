@@ -87,17 +87,17 @@ fi
 # location
 # 不使用 `ps aux | grep [g]eoclue`：它会把命令行里恰好含 "geoclue" 的
 # 无关进程误判为定位服务。这里用 pgrep -x 精确匹配进程名。
-if command -v gdbus >/dev/null 2>&1; then
-    if pids=$(pgrep -x geoclue); then
-        loc=1
-        for pid in $pids; do
-            pname=$(ps -p "$pid" -o comm=)
-            [ -n "$pname" ] && loc_app="${loc_app}$pname, "
-        done
-        loc_app="${loc_app%, }"
-    else
-        loc=0
-    fi
+# 定位服务检测只依赖 pgrep/ps，不需要 gdbus；以前的 gdbus 判断会让
+# 未安装 gdbus 的系统永远检测不到 geoclue。
+if pids=$(pgrep -x geoclue); then
+    loc=1
+    for pid in $pids; do
+        pname=$(ps -p "$pid" -o comm=)
+        [ -n "$pname" ] && loc_app="${loc_app}$pname, "
+    done
+    loc_app="${loc_app%, }"
+else
+    loc=0
 fi
 
 # screen sharing
