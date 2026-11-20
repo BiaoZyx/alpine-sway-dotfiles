@@ -25,7 +25,7 @@ Privacy indicator (mic muted / camera / location / screen sharing / recording):
 - **Waybar** with workspace/layout indicator (H/V/T/S), privacy indicator (mic mute, camera, location, screen sharing, recording red dot), volume/network/cpu/memory/clock/battery/tray/power, and a system-info panel on `$mod+i`.
 - **Power menu** on `$mod+x` or by clicking the power element; the waybar-triggered one is anchored under the button and closes on focus loss.
 - **Automation**: media is paused before lock/suspend; waybar is restarted after suspend; audio services are restarted from a clean state on login.
-- **Launchers**: fuzzel by default (rofi scripts are included as an alternative).
+- **Launcher**: fuzzel (app menu, clipboard menu, power menu).
 - **Apps**: foot, fuzzel, fnott, qutebrowser, Helix, cliphist, fcitx5 configs.
 
 ## Requirements
@@ -71,7 +71,7 @@ doas apk add pavucontrol pavucontrol-lang
 Core WM/bar/launcher, screenshot & recording, and helper tools used by the scripts:
 
 - `sway`, `swaybg`, `swayidle`, `swaylock-effects` (provides `swaylock`), `waybar`, `xwayland`
-- `wl-clipboard`, `cliphist`, `fnott`, `fuzzel` (default; `rofi` optional)
+- `wl-clipboard`, `cliphist`, `fnott`, `fuzzel`
 - `grimshot`, `wf-recorder`, `slurp` (screenshots/recording)
 - `jq` (JSON parsing in waybar scripts), `playerctl` (media keys / pause on lock)
 - `fcitx5` (input method)
@@ -79,12 +79,6 @@ Core WM/bar/launcher, screenshot & recording, and helper tools used by the scrip
 
 ```sh
 doas apk add sway swaybg swayidle swaylock-effects waybar xwayland wl-clipboard cliphist fnott fuzzel grimshot wf-recorder slurp jq playerctl fcitx5 xdg-desktop-portal xdg-desktop-portal-wlr
-```
-
-Alternative launcher (only if you switch from fuzzel to rofi):
-
-```sh
-doas apk add rofi
 ```
 
 ### Font

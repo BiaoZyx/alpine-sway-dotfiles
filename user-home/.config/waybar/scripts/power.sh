@@ -1,5 +1,4 @@
 #!/bin/sh
-#choice=$(printf "Lock\nLogout\nSleep\nReboot\nShutdown" | rofi -dmenu -p "Power")
 # 从 waybar 的 power 按钮点击时，把菜单锚定到右上角、waybar 下方；
 # 用快捷键 $mod+x 启动时仍保持默认居中。
 anchor=""

@@ -1,7 +1,7 @@
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*
 
-# 启动项，其中修复 DBus 问题
+# 启动项：清理会话残留、启动音频与桌面服务
 exec ~/.config/sway/scripts/startup.sh
 
 # D-Bus variables

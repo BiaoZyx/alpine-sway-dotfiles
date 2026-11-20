@@ -13,7 +13,6 @@ set $right l
 # Custom Keybindings' Settings
 # ------------------------------
 set $term foot
-#set $menu ~/.config/sway/scripts/rofi-drun.sh
 set $menu ~/.config/sway/scripts/fuzzel-drun.sh
 
 # ------------------------------
@@ -25,22 +24,18 @@ bindsym $mod+d exec $menu
 # ------------------------------
 # Custom App Keybindings
 # ------------------------------
-# 截图快捷键
-bindsym Print exec grimshot savecopy anything ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png --notify
-bindsym Shift+Print exec grimshot savecopy screen ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png --notify
-bindsym Control+Print exec grimshot savecopy active ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png --notify
-bindsym Control+Shift+Print exec grimshot savecopy area ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png --notify
+# 截图（脚本统一处理目录和时间戳）
+bindsym Print              exec ~/.config/sway/scripts/screenshot.sh anything
+bindsym Shift+Print        exec ~/.config/sway/scripts/screenshot.sh screen
+bindsym Control+Print      exec ~/.config/sway/scripts/screenshot.sh active
+bindsym Control+Shift+Print exec ~/.config/sway/scripts/screenshot.sh area
 
-# 录屏快捷键
-    # 开始录制全屏
-bindsym $mod+Shift+r exec mkdir -p ~/Videos/Screenrecord && notify-send "开始录屏" "wf-recorder" && wf-recorder -f ~/Videos/Screenrecord/recording_$(date +"%Y-%m-%d_%H-%M-%S").mp4
-    # 开始录制选定区域
-bindsym $mod+Shift+Ctrl+r exec mkdir -p ~/Videos/Screenrecord && notify-send "开始录屏" "wf-recorder" && wf-recorder -g "$(slurp)" -f ~/Videos/Screenrecord/recording_$(date +"%Y-%m-%d_%H-%M-%S").mp4
-    # 停止录制
-bindsym $mod+Shift+BackSpace exec notify-send "录屏结束" "已保存到 ~/Videos/Screenrecord" && killall -s SIGINT wf-recorder
+# 录屏（脚本统一处理目录、区域与停止）
+bindsym $mod+Shift+r        exec ~/.config/sway/scripts/record.sh start
+bindsym $mod+Shift+Ctrl+r   exec ~/.config/sway/scripts/record.sh area
+bindsym $mod+Shift+BackSpace exec ~/.config/sway/scripts/record.sh stop
 
 # 剪贴板菜单
-#bindsym $mod+c exec cliphist list | rofi -dmenu -display-columns 2 -p "Clipboard" -font 'JetBrainsMono Nerd Font Mono 12' | cliphist decode | wl-copy
 bindsym $mod+c exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
 
 # 通知快捷键 (Fnott)
@@ -60,10 +55,8 @@ bindsym $mod+i exec ~/.config/sway/scripts/sysinfo.sh
 # Sway's
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exec swaymsg exit
-#bindsym $mod+Shift+e exec pkill -f sway     # This one help you exit sway when lightdm has some problem.
 
 # Windows'
-#bindsym $mod+Shift+q kill
 bindsym $mod+q kill
 floating_modifier $mod normal
 
