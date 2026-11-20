@@ -14,7 +14,7 @@ fi
 if [ -n "$last_user" ]; then
     greeting="Hello, $last_user!"
 else
-    greeting="Welcome to Alpine Sway"
+    greeting="Welcome back!"
 fi
 
 exec tuigreet \
@@ -27,4 +27,4 @@ exec tuigreet \
     --width 48 --window-padding 1 \
     --greeting "$greeting" --greet-align center \
     --asterisks \
-    --theme 'border=magenta;text=white;time=lightmagenta;container=black;title=lightmagenta;greet=lightcyan;prompt=lightmagenta;input=white;action=lightblue;button=lightred'
+    --theme 'border=blue;text=white;time=lightblue;container=black;title=lightblue;greet=green;prompt=cyan;input=white;action=lightgreen;button=yellow'
