@@ -7,6 +7,10 @@
 
 set -u
 
+# 本桌面不使用无障碍（AT-SPI）总线，避免 waybar/fnott/fcitx5 等会话服务
+# 以及它们后续启动的子进程把它拉起来。
+export NO_AT_BRIDGE=1
+
 # waybar 的 pulseaudio 模块在 PulseAudio 不可达时会快速重试并泄漏 FD，
 # 软上限 1024 很快耗尽。硬上限通常是 4096，这里尽可能提高。
 ulimit -n 4096 2>/dev/null || true

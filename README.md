@@ -129,7 +129,7 @@ for d in sway swaylock waybar fuzzel fnott foot fontconfig; do cp -r "./user-hom
 for d in helix qutebrowser; do cp -r "./user-home/.config/$d" ~/.config/; done
 
 # Shell / editor dotfiles
-for f in zshrc p10k.zsh fzf.zsh vimrc; do cp "./user-home/.$f" ~/; done
+for f in profile zshrc p10k.zsh fzf.zsh vimrc; do cp "./user-home/.$f" ~/; done
 mkdir -p ~/.vim && cp -r ./user-home/.vim/. ~/.vim/
 
 # Themes, cursor and wallpapers

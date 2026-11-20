@@ -5,6 +5,9 @@
 
 set -eu
 
+# 从菜单启动的 GUI 程序无需无障碍总线，避免它们再拉起 at-spi 那一套。
+export NO_AT_BRIDGE=1
+
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
 # 优先使用会话继承下来的 DBUS_SESSION_BUS_ADDRESS；
