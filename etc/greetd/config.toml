@@ -3,10 +3,10 @@ vt = 7
 
 [default_session]
 user = "greetd"
-# 行为：默认进 sway；F3 可切换已安装的 Wayland 会话（sway / mango）；
-#       F2 打开命令菜单，F12 打开电源菜单；记住上次用户名。
-# 外观：紧凑 48 列，紫色系配色呼应 sway/waybar，密码显示星号反馈。
-command = "tuigreet --cmd sway --sessions /usr/share/wayland-sessions --kb-command 2 --kb-sessions 3 --kb-power 12 --time --time-format '%Y-%m-%d %H:%M:%S' --remember --user-menu --user-menu-min-uid 1000 --user-menu-max-uid 60000 --width 48 --window-padding 1 --greeting 'Alpine Sway' --greet-align center --asterisks --theme 'border=magenta;text=white;time=lightmagenta;container=black;title=lightmagenta;greet=lightcyan;prompt=lightmagenta;input=white;action=lightblue;button=lightred'"
+# 具体行为与外观都放在 greet.sh 里：
+# 默认进 sway；F2/F3/F12 菜单；记住上次用户名；
+# 问候语会根据上次登录的用户动态生成 "Hello, <USER>!"。
+command = "/etc/greetd/greet.sh"
 
 [commands]
 shutdown = "loginctl poweroff"

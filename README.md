@@ -147,10 +147,11 @@ Note: qutebrowser's generated files (`autoconfig.yml`, `links.js`, `quickmarks.j
 Display manager: this repo uses **greetd + tuigreet** only (lightdm is not included). To install its configured greeter:
 
 ```sh
-doas cp ./etc/greetd/config.toml /etc/greetd/config.toml
+doas cp ./etc/greetd/config.toml ./etc/greetd/greet.sh /etc/greetd/
+doas chmod +x /etc/greetd/greet.sh
 ```
 
-The greeter defaults to `sway`, offers a session menu (F3), command menu (F2), power menu (F12), remembers the last username, and uses a compact purple theme.
+The greeter defaults to `sway`, offers a session menu (F3), command menu (F2), power menu (F12), remembers the last username, and greets you with `Hello, <USER>!` once known. It uses a compact purple theme matching sway/waybar.
 
 Finally, reload sway (`$mod+Shift+c`) or log out and back in. Check the config with:
 
