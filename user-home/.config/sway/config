@@ -1,9 +1,17 @@
+# 主入口：只负责三件事
+#   1. 加载系统级和用户级片段（config.d/* 按文件名字典序加载）
+#   2. 启动会话服务
+#   3. 把 Wayland / D-Bus 变量写入 D-Bus 激活环境
+# 具体内容按职责放在 config.d/ 的各个文件里；不要在入口文件里堆细节。
+
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*
 
-# 启动项：清理会话残留、启动音频与桌面服务
+# 会话服务由 startup.sh 统一处理：它会先清理上一会话残留，再启动音频/输入法/栏等。
+# 用 exec（只在 sway 启动时执行一次）而不是 exec_always，避免 reload 时重复拉起服务。
 exec ~/.config/sway/scripts/startup.sh
 
-# D-Bus variables
+# 让通过 D-Bus 激活的后台程序继承当前会话的显示与 IPC 变量。
+# DBUS_SESSION_BUS_ADDRESS 若在当前环境未设置，dbus-update-activation-environment 会自动忽略它。
 exec dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME DBUS_SESSION_BUS_ADDRESS
 

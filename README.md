@@ -28,6 +28,25 @@ Privacy indicator (mic muted / camera / location / screen sharing / recording):
 - **Launcher**: fuzzel (app menu, clipboard menu, power menu).
 - **Apps**: foot, fuzzel, fnott, qutebrowser, Helix, cliphist, fcitx5 configs.
 
+## Config layout
+
+The main `config` is deliberately tiny: it only loads fragments, starts the session, and exports variables. Everything else is split by responsibility, so you can find and tweak one thing without reading the whole setup:
+
+```text
+~/.config/sway/
+├── config                 # entry point: includes, startup.sh, D-Bus env
+└── config.d/
+    ├── binds.sway         # keys, gestures, resize mode (bindsym/bindgesture)
+    ├── idle.sway          # swayidle, suspend, idle inhibition
+    ├── input.sway         # keyboard / touchpad settings
+    ├── rules.sway         # per-window rules (currently Firefox PiP)
+    └── theme.sway         # borders, gaps, wallpaper, cursor
+```
+
+Reusable commands live in `scripts/` instead of being inlined into keybindings: `startup.sh`, `screenshot.sh`, `record.sh`, `sysinfo.sh`, `restart_waybar.sh`, `fuzzel-drun.sh`. That keeps `binds.sway` to a readable "key -> script" mapping.
+
+> File extension: Sway's `include config.d/*` does not care about suffixes. `.sway` is just a convention used here; it is not required by Sway.
+
 ## Requirements
 
 All shell scripts use POSIX `sh` (busybox ash is enough); `bash` is **not** required.

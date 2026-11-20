@@ -1,3 +1,10 @@
-exec swayidle -w timeout 600 'playerctl pause; swaylock & loginctl suspend; ~/.config/sway/scripts/restart_waybar.sh'  # 10 分钟后睡眠（唤醒后重启 waybar）
+# 空闲 / 睡眠（idle）
+# ------------------------------------------------------------
+# 10 分钟无操作：先暂停媒体 -> 锁屏 -> 挂起；唤醒后重启 waybar，
+# 因为 waybar 的 pulseaudio/tray 模块有时会卡在挂起前的连接状态。
+# 全屏窗口和正在播放的媒体会阻止自动睡眠。
+# ------------------------------------------------------------
+
+exec swayidle -w timeout 600 'playerctl pause; swaylock & loginctl suspend; ~/.config/sway/scripts/restart_waybar.sh'
 for_window [app_id="^.*"] inhibit_idle fullscreen  # 有应用全屏阻止睡眠
 exec wayland-pipewire-idle-inhibit                          # 有媒体播放阻止睡眠
