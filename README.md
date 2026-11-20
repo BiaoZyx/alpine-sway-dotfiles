@@ -62,9 +62,10 @@ Needed for the session, D-Bus, permissions and suspend:
 - `elogind` (`loginctl`, suspend/lock)
 - `polkit-elogind`
 - `udisks2`
+- `greetd` + `greetd-tuigreet` (login manager and its TUI greeter)
 
 ```sh
-doas apk add dbus dbus-x11 seatd doas elogind polkit-elogind udisks2
+doas apk add dbus dbus-x11 seatd doas elogind polkit-elogind udisks2 greetd greetd-tuigreet
 ```
 
 ### Audio
@@ -142,6 +143,14 @@ chmod +x ~/.config/sway/scripts/*.sh ~/.config/waybar/scripts/*.sh ~/.config/qut
 ```
 
 Note: qutebrowser's generated files (`autoconfig.yml`, `links.js`, `quickmarks.js`, `qsettings/`) are intentionally ignored and not part of the repo.
+
+Display manager: this repo uses **greetd + tuigreet** only (lightdm is not included). To install its configured greeter:
+
+```sh
+doas cp ./etc/greetd/config.toml /etc/greetd/config.toml
+```
+
+The greeter defaults to `sway`, offers a session menu (F3), command menu (F2), power menu (F12), remembers the last username, and uses a compact purple theme.
 
 Finally, reload sway (`$mod+Shift+c`) or log out and back in. Check the config with:
 
