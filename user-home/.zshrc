@@ -10,8 +10,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Autoload zoxide
-if command -v zoxide > /dev/null 2>&1; then
+# zoxide
+if command -v zoxide >/dev/null 2>&1; then
     eval "$(zoxide init zsh)"
 fi
 
@@ -46,6 +46,12 @@ bindkey '^[d' kill-word
 bindkey '^[[3~' delete-char
 bindkey '^[[3;5~' kill-word
 
+# Ctrl+Backspace / Alt+Backspace: kill the word before the cursor
+bindkey '^H' backward-kill-word          # Ctrl+Backspace (most terminals)
+bindkey '^[[7;5~' backward-kill-word     # Ctrl+Backspace (xterm modifyOtherKeys)
+bindkey '^[^?' backward-kill-word        # Alt+Backspace
+bindkey '^[^H' backward-kill-word        # Alt+Backspace (terminals with BS=^H)
+
 bindkey '^[[H' beginning-of-line
 bindkey '^[[1~' beginning-of-line
 bindkey '^[OH' beginning-of-line
@@ -61,37 +67,64 @@ bindkey '^[^[[C' forward-word
 # ------------------------------------------------------------
 # Aliases
 # ------------------------------------------------------------
-if command -v eza &> /dev/null; then
-    alias ls='eza --icon'
-    alias ll='eza -l --git --group --links'
-    alias la='eza -A'
-    alias l='eza -lA --git --group --links'
+# ls
+if command -v eza >/dev/null 2>&1; then
+    alias ls='eza --icons --sort=type --color=always'
+    alias ll='ls -l --git --group --links'
+    alias la='ls -A'
+    alias l='ls -lA --git --group --links'
 else
     alias ls='ls --color=always'
     alias ll='ls -l'
     alias la='ls -A'
     alias l='ls -lAh'
 fi
+
+# Parent dirs
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
+
+# Useful ones
 alias cls='clear'
+
+# Colorful outputs
 alias grep='grep --color=auto'
 alias ip='ip --color=auto'
-alias fastfetch='fastfetch -l Alpine2'
-alias less='less -MNS --mouse --use-color'
-alias t='trans -e bing -b'
 
+# Git
 alias g=git
 alias gst='git status'
 alias gp='git pull'
 alias gpu='git push'
 alias gc='git commit'
+alias gd='git diff'
+alias gl='git log --oneline --graph'
 
-alias nmo='nmail -d ~/.config/nmail-outlook/'
-alias nmd='nmail -d ~/.config/nmail-disroot/'
+# customs
+alias fastfetch='fastfetch -l Alpine2'
+alias less='less -MSR --mouse --use-color'
+#alias t='trans -e bing -b'
+
+# ------------------------------------------------------------
+# Functions
+# ------------------------------------------------------------
+mkcd() { [ -n "$1" ] || { echo "usage: mkcd <dir>" >&2; return 1; }; mkdir -p "$1" && cd "$1"; }
+
+extract() {
+    [ -f "$1" ] || { echo "extract: no such file: $1" >&2; return 1; }
+    case "$1" in
+        *.tar.gz|*.tgz) tar xzf "$1" ;;
+        *.tar.xz)       tar xJf "$1" ;;
+        *.tar.bz2)      tar xjf "$1" ;;
+        *.zip)          unzip "$1" ;;
+        *.gz)           gunzip "$1" ;;
+        *)              echo "extract: unknown format: $1" >&2; return 1 ;;
+    esac
+}
+
 
 # ------------------------------------------------------------
 # Completion
@@ -103,7 +136,7 @@ zstyle ':completion:*' verbose yes
 zstyle ':completion:*' completer _expand _complete _ignored
 
 # ------------------------------------------------------------
-# Syntax Highlighting (MUST BE LAST)
+# Syntax Highlighting
 # ------------------------------------------------------------
 if [ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -187,4 +220,3 @@ export QT_FONT_DPI=90
 
 # GTK Settings
 export ADW_DISABLE_PORTAL=1
-
