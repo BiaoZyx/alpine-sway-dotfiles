@@ -32,14 +32,14 @@ bindsym $mod+d exec $menu
 # Custom App Keybindings
 # ------------------------------
 # 截图（脚本统一处理目录和时间戳）
-bindsym Print              exec ~/.config/sway/scripts/screenshot.sh anything
-bindsym Shift+Print        exec ~/.config/sway/scripts/screenshot.sh screen
-bindsym Control+Print      exec ~/.config/sway/scripts/screenshot.sh active
+bindsym Print               exec ~/.config/sway/scripts/screenshot.sh anything
+bindsym Shift+Print         exec ~/.config/sway/scripts/screenshot.sh screen
+bindsym Control+Print       exec ~/.config/sway/scripts/screenshot.sh active
 bindsym Control+Shift+Print exec ~/.config/sway/scripts/screenshot.sh area
 
 # 录屏（脚本统一处理目录、区域与停止）
-bindsym $mod+Shift+r        exec ~/.config/sway/scripts/record.sh start
-bindsym $mod+Shift+Ctrl+r   exec ~/.config/sway/scripts/record.sh area
+bindsym $mod+Shift+r         exec ~/.config/sway/scripts/record.sh start
+bindsym $mod+Shift+Ctrl+r    exec ~/.config/sway/scripts/record.sh area
 bindsym $mod+Shift+BackSpace exec ~/.config/sway/scripts/record.sh stop
 
 # 剪贴板菜单
@@ -147,7 +147,7 @@ bindsym $mod+r mode "resize"
 bindsym $mod+Alt+L exec sh -c 'playerctl pause; swaylock'              # 锁屏前暂停媒体
 bindsym $mod+Shift+S exec sh -c 'playerctl pause; swaylock & loginctl suspend; ~/.config/sway/scripts/restart_waybar.sh'  # 睡眠前暂停媒体，唤醒后重启 waybar
 
-# 媒体与音量 (修正为 amixer)
+# 媒体与音量
 bindsym --locked XF86AudioMute exec amixer sset Master toggle
 bindsym --locked XF86AudioLowerVolume exec amixer sset Master 5%-
 bindsym --locked XF86AudioRaiseVolume exec amixer sset Master 5%+

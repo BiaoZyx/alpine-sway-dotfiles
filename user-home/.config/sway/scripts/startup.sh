@@ -1,8 +1,9 @@
 #!/bin/sh
-# Author: BiaoZyx
-# Email: BiaoZyx@outlook.com
-# Date: 2026-08-26 19:26:20
-# Revised: 使用 XDG_RUNTIME_DIR；不 SIGKILL dbus-daemon；按 socket 判断服务；
+# @file    startup.sh
+# @author  BiaoZyx
+# @email   BiaoZyx@outlook.com
+# @date    2026-08-26
+# @brief   使用 XDG_RUNTIME_DIR；不 SIGKILL dbus-daemon；按 socket 判断服务；
 #          清理上一会话残留进程；提高 FD 上限避免 waybar 撞到 1024。
 
 set -u

@@ -1,5 +1,9 @@
 #!/bin/sh
-# 录屏：统一处理目录、时间戳、区域选择与停止信号
+# @file    record.sh
+# @author  BiaoZyx
+# @email   BiaoZyx@outlook.com
+# @date    2026-11-20
+# @brief   录屏：统一处理目录、时间戳、区域选择与停止信号
 set -eu
 
 dir="$HOME/Videos/Screenrecord"

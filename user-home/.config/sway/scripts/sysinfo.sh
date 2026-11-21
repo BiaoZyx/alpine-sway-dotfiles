@@ -1,5 +1,10 @@
 #!/bin/sh
-# 系统信息只读面板：用 fuzzel 弹出内存/磁盘/温度/IP/电池
+# @file    sysinfo.sh
+# @author  BiaoZyx
+# @email   BiaoZyx@outlook.com
+# @date    2026-11-20
+# @brief   系统信息只读面板：用 fuzzel 弹出内存/磁盘/温度/IP/电池
+
 set -eu
 
 MEM=$(free -h 2>/dev/null | awk '/^Mem:/ {printf "%s / %s", $3, $2}')

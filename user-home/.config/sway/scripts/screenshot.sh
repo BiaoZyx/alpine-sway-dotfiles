@@ -1,5 +1,9 @@
 #!/bin/sh
-# 截图：统一处理目录、时间戳和 grimshot 参数
+# @file    screenshot.sh
+# @author  BiaoZyx
+# @email   BiaoZyx@outlook.com
+# @date    2026-11-20
+# @brief   截图：统一处理目录、时间戳和 grimshot 参数
 set -eu
 
 mode=${1:-anything}

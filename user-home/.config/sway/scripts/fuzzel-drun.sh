@@ -1,7 +1,9 @@
 #!/bin/sh
-# Author: BiaoZyx
-# Email: BiaoZyx@outlook.com
-# Date: 2026-08-26 19:56:05
+# @file    fuzzel-drun.sh
+# @author  BiaoZyx
+# @email   BiaoZyx@outlook.com
+# @date    2026-08-26
+# @brief   fuzzel drun 模式聚合设置+启动
 
 set -eu
 
