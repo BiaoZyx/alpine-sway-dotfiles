@@ -7,3 +7,6 @@ user-home/.config/qutebrowser/autoconfig.yml
 user-home/.config/qutebrowser/links.js
 user-home/.config/qutebrowser/quickmarks.js
 user-home/.config/qutebrowser/qsettings/
+
+# Vim 自动生成的缓存
+.netrwhist

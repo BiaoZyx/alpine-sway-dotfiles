@@ -153,6 +153,44 @@ doas chmod +x /etc/greetd/greet.sh
 
 The greeter defaults to `sway`, offers a session menu (F3), command menu (F2), power menu (F12), remembers the last username, and greets you with `Hello, <USER>!` once known. It uses a compact purple theme matching sway/waybar.
 
+## OpenRC services
+
+Alpine uses OpenRC. These services need to be in the `default` runlevel so they come up on every boot (`setup-desktop sway` may already enable some of them):
+
+```sh
+for svc in dbus elogind polkit seatd udisks2 networkmanager greetd; do doas rc-update add "$svc" default; done
+```
+
+Start them right now without rebooting:
+
+```sh
+for svc in dbus elogind polkit seatd udisks2 networkmanager greetd; do doas rc-service "$svc" start; done
+```
+
+Your user must be in the `seat` group for seatd to allow the session:
+
+```sh
+doas adduser "$USER" seat
+```
+
+Verify with:
+
+```sh
+rc-update show default
+rc-status
+```
+
+Optional system config files included in this repo:
+
+```sh
+doas cp ./etc/doas.conf /etc/doas.conf
+doas cp ./etc/NetworkManager/conf.d/backend.conf /etc/NetworkManager/conf.d/
+```
+
+> `etc/elogind/logind.conf.d/10-elogind.conf` and `etc/elogind/sleep.conf.d/10-elogind.conf` are reference copies of elogind's commented defaults. They are kept here for documentation; normally you do **not** need to overwrite the system files with them.
+>
+> If you do not use NetworkManager and need Wi-Fi directly, also enable `wpa_supplicant`: `doas rc-update add wpa_supplicant default`.
+
 Finally, reload sway (`$mod+Shift+c`) or log out and back in. Check the config with:
 
 ```sh

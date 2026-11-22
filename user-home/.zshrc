@@ -106,7 +106,7 @@ alias gl='git log --oneline --graph'
 # customs
 alias fastfetch='fastfetch -l Alpine2'
 alias less='less -MSR --mouse --use-color'
-#alias t='trans -e bing -b'
+alias t='trans -e bing -b'
 
 # ------------------------------------------------------------
 # Functions
