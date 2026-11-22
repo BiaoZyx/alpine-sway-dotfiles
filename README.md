@@ -47,6 +47,15 @@ Reusable commands live in `scripts/` instead of being inlined into keybindings: 
 
 > File extension: Sway's `include config.d/*` does not care about suffixes. `.sway` is just a convention used here; it is not required by Sway.
 
+## Getting the repo
+
+```sh
+git clone https://github.com/BiaoZyx/alpine-sway-dotfiles.git
+cd alpine-sway-dotfiles
+```
+
+All commands below assume you are in this directory.
+
 ## Requirements
 
 All shell scripts use POSIX `sh` (busybox ash is enough); `bash` is **not** required.
@@ -117,9 +126,27 @@ doas apk add eza fortune helix qutebrowser
 
 ## Installation
 
-First, I recommend running `su -c 'setup-desktop sway'`, which installs some base packages automatically.
+### 1. Bootstrap `doas`
 
-Then install the packages above and copy the configs. Make sure you're in the repo root:
+Every command below uses `doas`. On a fresh Alpine install it is not configured yet, so do this once as root:
+
+```sh
+su -
+apk add doas
+cp /path/to/alpine-sway-dotfiles/etc/doas.conf /etc/doas.conf
+adduser <your-username> wheel
+exit
+```
+
+Replace `/path/to/alpine-sway-dotfiles` with the directory from *Getting the repo*, and `<your-username>` with your login name. Log out and back in so the new group takes effect, then verify with `doas echo ok`.
+
+### 2. Install packages
+
+I recommend running `su -c 'setup-desktop sway'` first; it installs some base packages automatically. Then follow the per-section `apk add` commands in *Requirements* above.
+
+### 3. Copy configs
+
+Back up anything you already have, then copy the configs (make sure you're in the repo root):
 
 ```sh
 # Core desktop configs
@@ -136,7 +163,7 @@ mkdir -p ~/.vim && cp -r ./user-home/.vim/. ~/.vim/
 # Themes, cursor and wallpapers
 mkdir -p ~/.local/share
 for d in fcitx5 icons; do cp -r "./user-home/.local/share/$d" ~/.local/share/; done
-cp -r ./user-home/Pictures ~/Pictures
+mkdir -p ~/Pictures && cp -r ./user-home/Pictures/. ~/Pictures/
 
 # Make sure the scripts stay executable
 chmod +x ~/.config/sway/scripts/*.sh ~/.config/waybar/scripts/*.sh ~/.config/qutebrowser/userscripts/save_links
@@ -196,3 +223,48 @@ Finally, reload sway (`$mod+Shift+c`) or log out and back in. Check the config w
 ```sh
 sway -C -c ~/.config/sway/config
 ```
+
+## Keybindings (quick reference)
+
+`$mod` is the Super/Windows key. Full list is in `config.d/binds.sway`.
+
+| Keys | Action |
+|---|---|
+| `$mod+Return` / `$mod+d` | Terminal (foot) / app launcher (fuzzel) |
+| `$mod+c` | Clipboard history |
+| `$mod+n` / `$mod+Shift+n` | Dismiss notification / clear all |
+| `$mod+x` | Power menu |
+| `$mod+m` | Toggle microphone mute |
+| `$mod+i` | System info panel |
+| `$mod+1` … `$mod+0` | Workspace 1 … 10; add Shift to move a window there |
+| `$mod+b/v/s/w/e/f` | Layout: horizontal / vertical / stacked / tabbed / toggle / fullscreen |
+| `$mod+r` | Resize mode (arrows or h/j/k/l, Enter/Esc to leave) |
+| `$mod+minus` / `$mod+Shift+minus` | Show scratchpad / move window to scratchpad |
+| `$mod+Alt+L` / `$mod+Shift+S` | Lock / suspend (media is paused first) |
+| `$mod+Shift+c` / `$mod+Shift+e` | Reload sway / exit sway |
+| `Print` / `Shift+Print` | Screenshot anything / full screen |
+| `Ctrl+Print` / `Ctrl+Shift+Print` | Screenshot active window / selected area |
+| `$mod+Shift+r` / `$mod+Shift+Ctrl+r` | Record full screen / selected area |
+| `$mod+Shift+BackSpace` | Stop recording and save |
+| Four-finger swipe left/right | Next / previous workspace |
+
+Screenshots go to `~/Pictures/Screenshots/`, recordings to `~/Videos/Screenrecord/`; both directories are created on demand.
+
+## Troubleshooting
+
+- **No audio / `pw-dump` says "Host is down"**: check `/run/user/1000/pipewire-0` and `pulse/native`. `startup.sh` cleans stale audio processes and waits for both sockets; re-login to rerun it.
+- **Waybar frozen after suspend**: `~/.config/sway/scripts/restart_waybar.sh` is called after `loginctl suspend` returns. You can run it manually too.
+- **Layout letter stuck on H**: it reads the focused container's parent layout from `swaymsg -t get_workspaces/get_tree`; run `~/.config/waybar/scripts/layout_indicator.sh` to see the value directly.
+- **`sh: out of range` from privacy indicator**: means `pw-dump` returned nothing; values are now defaulted to 0, so this should not recur.
+- **Config syntax check**: `sway -C -c ~/.config/sway/config`; after editing, `$mod+Shift+c` reloads bindings.
+
+## Updating
+
+```sh
+cd alpine-sway-dotfiles
+git pull
+# re-run the "Copy configs" block above, then:
+swaymsg reload
+```
+
+Re-login if startup services or the greeter config changed.
